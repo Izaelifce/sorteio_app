@@ -1,0 +1,7 @@
+ Ignorar pastas do VS Code e caches do Python
+.vscode/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.env

@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head><link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.ico') }}">
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>igreja estádio tiangua-ce </title>
+
+  <!-- Fontes -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400&display=swap" rel="stylesheet">
+
+  <style>
+    /* ===== Reset / Base ===== */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html,body { height: 100%; }
+
+    /* ===== Fundo futurista + partículas canvas ===== */
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: radial-gradient(circle at 10% 10%, #071023 0%, #02020a 60%);
+      color: #e6f7ff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 18px;
+      padding: 28px;
+      overflow: hidden;
+    }
+    canvas#bg { position: absolute; inset: 0; z-index: 0; }
+
+    /* ===== Patrocínio topo ===== */
+    .patrocinio {
+      position: relative;
+      z-index: 2;
+      width: min(1000px, 920px);
+      display:flex;
+      gap:12px;
+      justify-content: center;
+      align-items: center;
+      padding:8px 12px;
+    }
+    .patrocinio img { height:48px; object-fit:contain; border-radius:6px; filter: drop-shadow(0 4px 12px rgba(0,0,0,0.6)); }
+
+    /* ===== Container principal ===== */
+    .wrap {
+      position: relative;
+      z-index: 2;
+      width: min(1000px, 920px);
+      display: grid;
+      grid-template-columns: 420px 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+
+    .panel {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 14px;
+      padding: 18px;
+      backdrop-filter: blur(6px);
+      box-shadow: 0 8px 40px rgba(0,255,255,0.04), 0 6px 18px rgba(255,0,255,0.03);
+    }
+
+    /* ===== Controles (lado esquerdo) ===== */
+    .panel-left h1 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.4rem;
+      background: linear-gradient(90deg, #00ffff, #ff00ff);
+      -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent; color: transparent;
+      margin-bottom: 10px;
+    }
+    label { display:block; font-size:0.85rem; margin-bottom:6px; color: #dbefff; }
+    input[type="number"], input[type="range"] {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      outline: none;
+      font-size: 1rem;
+      margin-bottom: 10px;
+      background: rgba(255,255,255,0.02);
+      color: #eafcff;
+    }
+    .controls { display:flex; flex-direction: column; gap:8px; margin-top:6px; }
+    .buttons { display:flex; gap:8px; margin-top:6px; }
+    .btn {
+      font-family: 'Orbitron', sans-serif;
+      background: linear-gradient(90deg,#ff00ff,#00ffff);
+      border: none;
+      color: #010101;
+      padding: 10px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight:700;
+      box-shadow: 0 6px 18px rgba(0,255,255,0.08);
+      flex: 1;
+    }
+    .btn.secondary {
+      background: linear-gradient(90deg,#444,#666);
+      color: #fff;
+      box-shadow: none;
+      font-weight:600;
+    }
+    .btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+
+    .info {
+      margin-top: 10px;
+      font-size: 0.95rem;
+      color: #cfeffd;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      padding: 10px;
+      border-radius: 8px;
+    }
+
+    /* ===== Área das listas (lado direito) ===== */
+    .panel-right .stats {
+      display:flex;
+      gap:12px;
+      margin-bottom: 12px;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+    .chip {
+      background: linear-gradient(90deg,#001f26,#002c3a);
+      border-radius: 999px;
+      padding:8px 12px;
+      font-weight:700;
+      color:#bff6ff;
+      font-size:0.95rem;
+      border:1px solid rgba(0,255,255,0.06);
+    }
+
+    .lists {
+      display:flex;
+      gap:12px;
+    }
+    .list-box {
+      flex:1;
+      background: rgba(255,255,255,0.02);
+      padding: 12px;
+      border-radius:10px;
+      min-height: 220px;
+      max-height: 420px;
+      overflow: auto;
+      border:1px solid rgba(255,255,255,0.03);
+    }
+    .list-box h3 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.95rem;
+      margin-bottom:8px;
+      color:#e9ffff;
+    }
+    .badges { display:flex; flex-wrap:wrap; gap:8px; }
+    .badge {
+      display:inline-block;
+      background: linear-gradient(90deg,#002b2f,#003745);
+      color:#c6ffff;
+      padding:8px 10px;
+      border-radius:8px;
+      font-weight:700;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.45);
+      min-width:36px;
+      text-align:center;
+    }
+
+    /* ===== Propaganda rodapé ===== */
+    .propaganda {
+      position: relative;
+      z-index: 2;
+      width: min(1000px, 920px);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:10px;
+      border-radius:8px;
+      background: rgba(255,255,255,0.02);
+      border:1px solid rgba(255,255,255,0.03);
+    }
+    .propaganda img { max-height:80px; object-fit:contain; border-radius:6px; }
+
+    /* ===== Responsivo ===== */
+    @media (max-width: 920px) {
+      .wrap { grid-template-columns: 1fr; width: 92%; }
+      .patrocinio, .propaganda { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Partículas (JS desenha no canvas) -->
+  <canvas id="bg"></canvas>
+
+  <!-- Patrocinadores (troque os src pelas logos reais) -->
+
+  <!-- Patrocinador 1 -->
+  <div class="patrocinio">
+  <a href="https://www.instagram.com/jjcasafesta/reels/" target="_blank">
+    <img src="{{ url_for('static', filename='image.jpg') }}" alt="Patrocinador 1" style="max-width:200px;">
+  </a>
+</div>
+
+</div>
+  <!-- Patrocinador 2 -->
+  <a href="https://site-do-patrocinador2.com" target="_blank">
+    <img src="patrocinador2.jpg" alt="Patrocinador 2">
+  </a>
+
+  <!-- Patrocinador 3 -->
+  <a href="https://instagram.com/empresa3" target="_blank">
+    <img src="patrocinador3.png" alt="Patrocinador 3">
+  </a>
+</div>
+
+
+  <div class="wrap">
+    <!-- Painel esquerdo: controles -->
+    <div class="panel panel-left">
+      <h1>Sorteio — um a um</h1>
+
+      <label for="maximo">Escolha o número máximo</label>
+      <input id="maximo" type="number" min="1" value="100" />
+
+      <label for="quantidade">Digite quantos números deseja sortear</label>
+      <input id="quantidade" type="number" min="1" value="50" />
+
+      <label for="velocidade">Velocidade (ms entre cada sorteio automático)</label>
+      <input id="velocidade" type="range" min="50" max="2000" value="250" />
+
+      <div class="controls">
+        <div class="buttons">
+          <button id="btnStart" class="btn">Iniciar Automático</button>
+          <button id="btnPause" class="btn secondary" disabled>Pausar</button>
+        </div>
+        <div class="buttons">
+          <button id="btnNext" class="btn">Sortear Próximo</button>
+          <button id="btnReset" class="btn secondary">Resetar</button>
+        </div>
+      </div>
+
+      <div class="info">
+        Use <strong>Iniciar Automático</strong> para sortear um-a-um automaticamente até completar a quantidade.
+        Ou pressione <strong>Sortear Próximo</strong> para sortear manualmente, um por um. 
+      </div>
+    </div>
+
+    <!-- Painel direito: status / listas -->
+    <div class="panel panel-right">
+      <div class="stats">
+        <div class="chip" id="chip-sorteados">Sorteados: 0</div>
+        <div class="chip" id="chip-restantes">Restantes: 0</div>
+        <div class="chip" id="chip-total">Total: 0</div>
+      </div>
+
+      <div class="lists">
+        <div class="list-box">
+          <h3>Números Sorteados</h3>
+          <div id="lista-sorteados" class="badges" aria-live="polite"></div>
+        </div>
+
+        <div class="list-box">
+          <h3>Números Restantes</h3>
+          <div id="lista-restantes" class="badges"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Propaganda / Banner -->
+  <div class="propaganda">
+    <img src="https://via.placeholder.com/900x80?text=An%C3%BAncio+/+Patroc%C3%ADnio" alt="Propaganda">
+  </div>
+
+  <script>
+    /* ===== Utilitários ===== */
+    function shuffleArray(a) {
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    /* ===== Estado ===== */
+    let pool = [];           // números restantes (fila embaralhada)
+    let sorteados = [];      // números sorteados (na ordem retirada)
+    let intervalId = null;   // id do setInterval quando automático
+    let targetQty = 0;       // quantidade pedida
+    let running = false;
+
+    /* ===== Elementos ===== */
+    const elMax = document.getElementById('maximo');
+    const elQtd = document.getElementById('quantidade');
+    const elVel = document.getElementById('velocidade');
+    const elBtnStart = document.getElementById('btnStart');
+    const elBtnPause = document.getElementById('btnPause');
+    const elBtnNext = document.getElementById('btnNext');
+    const elBtnReset = document.getElementById('btnReset');
+    const elChipS = document.getElementById('chip-sorteados');
+    const elChipR = document.getElementById('chip-restantes');
+    const elChipT = document.getElementById('chip-total');
+    const elListaS = document.getElementById('lista-sorteados');
+    const elListaR = document.getElementById('lista-restantes');
+
+    /* ===== Inicializa a pool de números (1..max) e embaralha ===== */
+    function initPool() {
+      const max = parseInt(elMax.value, 10);
+      if (isNaN(max) || max < 1) {
+        alert('Defina um valor válido para o Máximo.');
+        return false;
+      }
+      pool = [];
+      for (let i = 1; i <= max; i++) pool.push(i);
+      shuffleArray(pool);
+      sorteados = [];
+      updateUI();
+      return true;
+    }
+
+    /* ===== Atualiza interface ===== */
+    function updateUI() {
+      elChipS.textContent = `Sorteados: ${sorteados.length}`;
+      elChipR.textContent = `Restantes: ${pool.length}`;
+      elChipT.textContent = `Total: ${ (parseInt(elMax.value,10) || 0) }`;
+
+      // Lista sorteados (exibe em ordem retirada)
+      elListaS.innerHTML = sorteados.map(n => `<span class="badge">${n}</span>`).join('');
+
+      // Lista restantes (exibe a pool atual)
+      elListaR.innerHTML = pool.map(n => `<span class="badge">${n}</span>`).join('');
+    }
+
+    /* ===== Sorteia o próximo número (um por vez) ===== */
+    function drawOne() {
+      if (sorteados.length >= targetQty) {
+        stopAuto();
+        return;
+      }
+      if (pool.length === 0) {
+        stopAuto();
+        alert('Não há mais números na pool.');
+        return;
+      }
+      const num = pool.shift();      // pega da frente (pool já embaralhado)
+      sorteados.push(num);
+      updateUI();
+
+      // Quando atingir a quantidade pedida, para
+      if (sorteados.length >= targetQty) {
+        stopAuto();
+        // pequeno destaque visual/fala (opcional)
+        // alert(`Concluído: foram sorteados ${sorteados.length} números.`);
+      }
+    }
+
+    /* ===== Iniciar automático ===== */
+    function startAuto() {
+      // validações
+      const max = parseInt(elMax.value, 10);
+      const qtd = parseInt(elQtd.value, 10);
+      if (isNaN(max) || max < 1) { alert('Defina um Máximo válido.'); return; }
+      if (isNaN(qtd) || qtd < 1) { alert('Defina uma Quantidade válida.'); return; }
+      if (qtd > max) { alert('A quantidade não pode ser maior que o máximo.'); return; }
+
+      // se pool vazio ou tamanho do pool não bate com max atual -> reinicia pool
+      if (pool.length === 0 || (parseInt(elMax._prev || -1,10) !== max)) {
+        elMax._prev = String(max);
+        initPool();
+      }
+
+      targetQty = qtd;
+      // se já tiver sido sorteado mais que a target (ex: usuário reduz qtd), só atualiza target
+      if (sorteados.length >= targetQty) { updateUI(); return; }
+
+      // desabilita alguns controles enquanto roda
+      elBtnStart.disabled = true;
+      elBtnPause.disabled = false;
+      elBtnNext.disabled = false; // permite também sortear manualmente se quiser
+      elBtnReset.disabled = true;
+      elMax.disabled = true;
+      elQtd.disabled = true;
+
+      running = true;
+      const ms = parseInt(elVel.value,10) || 300;
+      // draw once immediately for melhor sensação
+      drawOne();
+      intervalId = setInterval(() => {
+        drawOne();
+        // se completou, stopAuto será chamado dentro drawOne()
+      }, ms);
+    }
+
+    /* ===== Pausar / Retomar ===== */
+    function stopAuto() {
+      if (intervalId) { clearInterval(intervalId); intervalId = null; }
+      running = false;
+      elBtnStart.disabled = false;
+      elBtnPause.disabled = true;
+      elBtnReset.disabled = false;
+      elMax.disabled = false;
+      elQtd.disabled = false;
+    }
+
+    function togglePause() {
+      if (!running && intervalId === null) return;
+      if (intervalId) {
+        clearInterval(intervalId); intervalId = null;
+        elBtnPause.textContent = 'Retomar';
+        running = false;
+      } else {
+        // retomar: reinicia o intervalo com a velocidade atual
+        const ms = parseInt(elVel.value,10) || 300;
+        intervalId = setInterval(() => {
+          drawOne();
+        }, ms);
+        elBtnPause.textContent = 'Pausar';
+        running = true;
+      }
+    }
+
+    /* ===== Sortear próximo manualmente ===== */
+    function nextManual() {
+      // se pool vazio ou target não definido, inicializa
+      const max = parseInt(elMax.value, 10);
+      const qtd = parseInt(elQtd.value, 10);
+      if (isNaN(max) || max < 1) { alert('Defina um Máximo válido.'); return; }
+      if (isNaN(qtd) || qtd < 1) { alert('Defina uma Quantidade válida.'); return; }
+      if (qtd > max) { alert('A quantidade não pode ser maior que o máximo.'); return; }
+      if (pool.length === 0) initPool();
+
+      targetQty = qtd;
+      if (sorteados.length >= targetQty) { alert('Já foram sorteados todos os números solicitados.'); return; }
+      drawOne();
+    }
+
+    /* ===== Reset completo ===== */
+    function resetAll() {
+      if (intervalId) { clearInterval(intervalId); intervalId = null; }
+      pool = [];
+      sorteados = [];
+      targetQty = 0;
+      running = false;
+      elBtnStart.disabled = false;
+      elBtnPause.disabled = true;
+      elBtnPause.textContent = 'Pausar';
+      elBtnReset.disabled = false;
+      elMax.disabled = false;
+      elQtd.disabled = false;
+      elListaS.innerHTML = '';
+      elListaR.innerHTML = '';
+      elChipS.textContent = 'Sorteados: 0';
+      elChipR.textContent = 'Restantes: 0';
+      elChipT.textContent = `Total: ${ (parseInt(elMax.value,10) || 0) }`;
+    }
+
+    /* ===== Eventos ===== */
+    elBtnStart.addEventListener('click', startAuto);
+    elBtnPause.addEventListener('click', togglePause);
+    elBtnNext.addEventListener('click', nextManual);
+    elBtnReset.addEventListener('click', resetAll);
+
+    // Se o máximo mudar, atualiza a pool (reinicializa)
+    elMax.addEventListener('change', () => {
+      initPool();
+    });
+
+    // Atualiza velocidade ao mudar (se estiver em execução reinicia intervalo)
+    elVel.addEventListener('input', () => {
+      if (intervalId) {
+        clearInterval(intervalId);
+        intervalId = setInterval(() => drawOne(), parseInt(elVel.value,10) || 300);
+      }
+    });
+
+    // inicializa ao abrir
+    initPool();
+
+    /* ===== Partículas simples (fundo) ===== */
+    (function particlesBG(){
+      const canvas = document.getElementById('bg');
+      const ctx = canvas.getContext('2d');
+      let W = canvas.width = innerWidth;
+      let H = canvas.height = innerHeight;
+      const pts = [];
+      const N = Math.min(120, Math.floor((W*H)/50000)); // quantidade dinâmica
+      for (let i=0;i<N;i++){
+        pts.push({
+          x: Math.random()*W,
+          y: Math.random()*H,
+          r: 0.6 + Math.random()*2.2,
+          dx: (Math.random()-0.5)*0.3,
+          dy: (Math.random()-0.5)*0.3,
+          col: Math.random()>0.5 ? '#00ffff' : '#ff00ff'
+        });
+      }
+      function resize(){ W=canvas.width=innerWidth; H=canvas.height=innerHeight; }
+      addEventListener('resize', resize);
+
+      function frame(){
+        ctx.clearRect(0,0,W,H);
+        // glow background faint grid lines
+        for (let p of pts){
+          p.x += p.dx; p.y += p.dy;
+          if (p.x<0) p.x=W;
+          if (p.x>W) p.x=0;
+          if (p.y<0) p.y=H;
+          if (p.y>H) p.y=0;
+          ctx.beginPath();
+          const g = ctx.createRadialGradient(p.x,p.y,p.r*0.1,p.x,p.y,p.r*6);
+          g.addColorStop(0, p.col);
+          g.addColorStop(1, 'rgba(0,0,0,0)');
+          ctx.fillStyle = g;
+          ctx.arc(p.x,p.y,p.r*3,0,Math.PI*2);
+          ctx.fill();
+        }
+        requestAnimationFrame(frame);
+      }
+      frame();
+    })();
+
+  </script>
+
+</body>
+</html>
+
+
+

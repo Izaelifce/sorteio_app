@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+    <meta charset="UTF-8">
+    <title>Sorteio Interativo</title>
+    <style>
+        body { font-family: Arial; background: #28a745(0 94% 3% / 0.144); color: #333; margin:0; padding:0; }
+        .container { max-width: 800px; margin: 50px auto; padding:20px; background:#fff; border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.1);}
+        h1,h3 { text-align:center;}
+        form { display:flex; justify-content:center; gap:10px; margin-bottom:20px; }
+        input[type=number]{ padding:8px; border-radius:6px; border:1px solid #ccc; width:100px; text-align:center;}
+        button { padding:8px 16px; border-radius:6px; border:none; cursor:pointer; font-weight:bold; color:#fff; }
+        .btn-inicializar { background:#007bff; }
+        .btn-sortear { background:#28a745; }
+        .btn-resetar { background:#dc3545; }
+        .numero-sorteado { background:#ffc107; padding:15px; border-radius:10px; font-size:24px; font-weight:bold; text-align:center; margin-bottom:20px;}
+        .listas { display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap; }
+        .listas .card { flex:1 1 45%; background:gray; padding:15px; border-radius:10px; text-align:center; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>SORTEIO IGREJA DO ESTÁDIO</h1>
+
+    <form method="post" action="/inicializar_web">
+        <input type="number" name="quantidade" min="1" placeholder="Quantidade" required>
+        <button type="submit" class="btn-inicializar">Inicializar</button>
+    </form>
+
+    <div style="text-align:center; margin-bottom:20px;">
+        <a href="/sortear_web"><button class="btn-sortear">Sortear</button></a>
+        <a href="/resetar_web"><button class="btn-resetar">Resetar</button></a>
+    </div>
+
+    <div class="numero-sorteado">
+        Número sorteado: {{ numero_sorteado if numero_sorteado else '-' }}
+    </div>
+
+    <div class="listas">
+        <div class="card">
+            <h3>Números sorteados</h3>
+            <p>
+                {% if numeros_sorteados %}
+                    {{ numeros_sorteados | join(', ') }}
+                {% else %}
+                    Nenhum número sorteado ainda.
+                {% endif %}
+            </p>
+        </div>
+
+        <div class="card">
+            <h3>Números restantes</h3>
+            <p>
+                {% if numeros_disponiveis %}
+                    {{ numeros_disponiveis | join(', ') }}
+                {% else %}
+                    Nenhum número restante.
+                {% endif %}
+            </p>
+        </div>
+    </div>
+</div>
+</body>
+</html>
