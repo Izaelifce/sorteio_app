@@ -5,3 +5,12 @@ __pycache__/
 *.pyo
 *.pyd
 .env
+# PyInstaller build/dist
+build/
+dist/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
