@@ -1,0 +1,15 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Open index_igreja.html",
+            "file": "c:\\Users\\defaultuser0.DESKTOP-88N9H0A\\Desktop\\sorteio_app\\templates\\index_igreja.html"
+        }
+    ]
+}
