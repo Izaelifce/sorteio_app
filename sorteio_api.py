@@ -19,6 +19,10 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 # Pasta de templates
 templates = Jinja2Templates(directory="templates")
 
+# ✅ Endpoint de Health Check
+@app.get("/health")
+def health_check():
+    return {"status": "ok"}
 # Variáveis de estado do sorteio
 numeros_disponiveis = []
 numeros_sorteados = []
@@ -32,6 +36,10 @@ quantidade_inicial = 0
 # -----------------------------
 # Página principal
 # -----------------------------
+
+
+
+
 @app.get("/", response_class=HTMLResponse)
 def home(request: Request):
     return templates.TemplateResponse("index_igreja.html", {
