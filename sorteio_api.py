@@ -1,6 +1,8 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Form
+from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+import random
 
 app = FastAPI()
 
@@ -10,14 +12,6 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 # Pasta de templates
 templates = Jinja2Templates(directory="templates")
 
-@app.get("/")
-def home(request: Request):  # ✅ adicionar Request como parâmetro
-    return templates.TemplateResponse("index_igreja.html", {
-        "request": request,  # ✅ obrigatório para url_for funcionar nos templates
-        "numeros_sorteados": [],
-        "quantidade_inicial": 50
-    })
-
 # ==========================
 # VARIÁVEIS DE ESTADO
 # ==========================
@@ -25,6 +19,13 @@ numeros_disponiveis = []
 numeros_sorteados = []
 numero_sorteado = None
 quantidade_inicial = 0
+
+# ==========================
+# ENDPOINT DE HEALTH CHECK
+# ==========================
+@app.get("/health")
+def health_check():
+    return {"status": "ok"}
 
 # ==========================
 # PÁGINA PRINCIPAL
