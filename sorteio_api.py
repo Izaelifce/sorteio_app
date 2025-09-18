@@ -33,7 +33,7 @@ def health_check():
 @app.get("/", response_class=HTMLResponse)
 def home(request: Request):
     return templates.TemplateResponse("index_igreja.html", {
-        "request": request,
+        "request": request,  # obrigatório para url_for funcionar
         "numeros_disponiveis": numeros_disponiveis,
         "numeros_sorteados": numeros_sorteados,
         "numero_sorteado": numero_sorteado,
