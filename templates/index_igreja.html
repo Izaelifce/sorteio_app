@@ -59,6 +59,7 @@
             padding: 30px;
             border-radius: 15px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            text-align: center;
         }
 
         canvas#bg {
@@ -84,6 +85,28 @@
             flex-wrap: wrap;
             gap: 10px;
             justify-content: center;
+        }
+
+        .botoes {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .botoes button {
+            padding: 10px 20px;
+            border: none;
+            background-color: #333;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.2s ease-in-out;
+        }
+
+        .botoes button:hover {
+            background-color: #555;
         }
     </style>
 </head>
@@ -112,12 +135,14 @@
             <div class="numero-sorteado">🎉 {{ numero_sorteado }}</div>
         {% endif %}
 
-        <form action="/sortear" method="post" style="display:inline;">
-            <button type="submit">Sortear</button>
-        </form>
-        <form action="/resetar" method="post" style="display:inline;">
-            <button type="submit">Resetar</button>
-        </form>
+        <div class="botoes">
+            <form action="/sortear" method="post">
+                <button type="submit">Sortear</button>
+            </form>
+            <form action="/resetar" method="post">
+                <button type="submit">Resetar</button>
+            </form>
+        </div>
 
         {% if numeros_sorteados %}
         <div class="numeros-sorteados">
@@ -134,52 +159,75 @@
     </div>
 
     <script>
-        // Exemplo simples de animação de partículas no fundo
-        const canvas = document.getElementById("bg");
-        const ctx = canvas.getContext("2d");
-        let particles = [];
+document.addEventListener('DOMContentLoaded', () => {
+  const canvas = document.getElementById("bg");
+  if (!canvas) {
+    console.warn('Canvas #bg não encontrado — verifique se existe <canvas id="bg"></canvas> no HTML.');
+    return;
+  }
 
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-        window.addEventListener("resize", resizeCanvas);
-        resizeCanvas();
+  const ctx = canvas.getContext("2d");
+  let particles = [];
 
-        for (let i = 0; i < 50; i++) {
-            particles.push({
-                x: Math.random() * canvas.width,
-                y: Math.random() * canvas.height,
-                r: Math.random() * 2 + 1,
-                d: Math.random() * 1
-            });
-        }
+  function resizeCanvas() {
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = Math.floor(window.innerWidth * dpr);
+    canvas.height = Math.floor(window.innerHeight * dpr);
+    canvas.style.width = window.innerWidth + 'px';
+    canvas.style.height = window.innerHeight + 'px';
+    // Ajusta o contexto para o DPR para manter o desenho nítido
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
 
-        function draw() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = "rgba(0,0,0,0.1)";
-            ctx.beginPath();
-            for (let i = 0; i < particles.length; i++) {
-                const p = particles[i];
-                ctx.moveTo(p.x, p.y);
-                ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2, true);
-            }
-            ctx.fill();
-            update();
-        }
+  window.addEventListener("resize", resizeCanvas);
+  resizeCanvas();
 
-        function update() {
-            for (let i = 0; i < particles.length; i++) {
-                const p = particles[i];
-                p.y += p.d;
-                if (p.y > canvas.height) {
-                    p.y = 0;
-                    p.x = Math.random() * canvas.width;
-                }
-            }
-        }
+  // popula partículas (coordenadas em CSS pixels)
+  const particleCount = 50;
+  const cssWidth = () => canvas.width / (window.devicePixelRatio || 1);
+  const cssHeight = () => canvas.height / (window.devicePixelRatio || 1);
 
-        setInterval(draw, 33);
-    </script>
+  particles = [];
+  for (let i = 0; i < particleCount; i++) {
+    particles.push({
+      x: Math.random() * cssWidth(),
+      y: Math.random() * cssHeight(),
+      r: Math.random() * 2 + 1,
+      d: Math.random() * 1 + 0.2
+    });
+  }
+
+  function update() {
+    const h = cssHeight();
+    const w = cssWidth();
+    for (let p of particles) {
+      p.y += p.d;
+      if (p.y - p.r > h) {
+        p.y = -p.r;
+        p.x = Math.random() * w;
+      }
+    }
+  }
+
+  function draw() {
+    // limpa (em device pixels)
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    ctx.fillStyle = 'rgba(0,0,0,0.1)';
+    ctx.beginPath();
+    for (let p of particles) {
+      ctx.moveTo(p.x, p.y);
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2, true);
+    }
+    ctx.fill();
+
+    update();
+    requestAnimationFrame(draw);
+  }
+
+  requestAnimationFrame(draw);
+});
+</script>
+
 </body>
 </html>
