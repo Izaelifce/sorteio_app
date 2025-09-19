@@ -69,6 +69,22 @@
             height: 100%;
             z-index: -1;
         }
+
+        .numero-sorteado {
+            font-size: 2rem;
+            margin: 15px 0;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .numeros-sorteados {
+            margin-top: 15px;
+            font-size: 1.2rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
     </style>
 </head>
 <body>
@@ -90,9 +106,26 @@
 
     <!-- Painel principal -->
     <div class="wrap">
-        <!-- Aqui vai o conteúdo principal do sorteio -->
-        <!-- Copie o que você já tinha no painel -->
-        ...
+        <h1>SORTEIO IGREJA DO ESTÁDIO</h1>
+
+        {% if numero_sorteado %}
+            <div class="numero-sorteado">🎉 {{ numero_sorteado }}</div>
+        {% endif %}
+
+        <form action="/sortear" method="post" style="display:inline;">
+            <button type="submit">Sortear</button>
+        </form>
+        <form action="/resetar" method="post" style="display:inline;">
+            <button type="submit">Resetar</button>
+        </form>
+
+        {% if numeros_sorteados %}
+        <div class="numeros-sorteados">
+            {% for n in numeros_sorteados %}
+                <span>{{ n }}</span>
+            {% endfor %}
+        </div>
+        {% endif %}
     </div>
 
     <!-- Propaganda / Banner -->
@@ -101,8 +134,52 @@
     </div>
 
     <script>
-        // Seu JavaScript original vai aqui
-        // ...
+        // Exemplo simples de animação de partículas no fundo
+        const canvas = document.getElementById("bg");
+        const ctx = canvas.getContext("2d");
+        let particles = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener("resize", resizeCanvas);
+        resizeCanvas();
+
+        for (let i = 0; i < 50; i++) {
+            particles.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                r: Math.random() * 2 + 1,
+                d: Math.random() * 1
+            });
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "rgba(0,0,0,0.1)";
+            ctx.beginPath();
+            for (let i = 0; i < particles.length; i++) {
+                const p = particles[i];
+                ctx.moveTo(p.x, p.y);
+                ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2, true);
+            }
+            ctx.fill();
+            update();
+        }
+
+        function update() {
+            for (let i = 0; i < particles.length; i++) {
+                const p = particles[i];
+                p.y += p.d;
+                if (p.y > canvas.height) {
+                    p.y = 0;
+                    p.x = Math.random() * canvas.width;
+                }
+            }
+        }
+
+        setInterval(draw, 33);
     </script>
 </body>
 </html>
