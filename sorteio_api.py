@@ -6,91 +6,55 @@ import random
 
 app = FastAPI()
 
-# Serve os arquivos estáticos
+# ✅ MONTA A PASTA STATIC
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
-# Pasta de templates
+# Configura templates
 templates = Jinja2Templates(directory="templates")
 
-# ==========================
-# VARIÁVEIS DE ESTADO
-# ==========================
-numeros_disponiveis = []
+# Variáveis globais
 numeros_sorteados = []
-numero_sorteado = None
-quantidade_inicial = 0
+quantidade_inicial = 50  # ajuste se precisar
 
-# ==========================
-# ENDPOINT DE HEALTH CHECK
-# ==========================
-@app.get("/health")
-def health_check():
-    return {"status": "ok"}
-
-# ==========================
-# PÁGINA PRINCIPAL
-# ==========================
 @app.get("/", response_class=HTMLResponse)
-def home(request: Request):
-    return templates.TemplateResponse("index_igreja.html", {
-        "request": request,  # obrigatório para url_for funcionar
-        "numeros_disponiveis": numeros_disponiveis,
-        "numeros_sorteados": numeros_sorteados,
-        "numero_sorteado": numero_sorteado,
-        "quantidade_inicial": quantidade_inicial
-    })
-
-# ==========================
-# INICIALIZA O SORTEIO
-# ==========================
-@app.post("/inicializar_web", response_class=HTMLResponse)
-def inicializar_web(request: Request, quantidade: int = Form(...)):
-    global numeros_disponiveis, numeros_sorteados, quantidade_inicial, numero_sorteado
-    quantidade_inicial = quantidade
-    numeros_disponiveis = list(range(1, quantidade_inicial + 1))
-    numeros_sorteados = []
-    numero_sorteado = None
+async def home(request: Request):
     return templates.TemplateResponse("index_igreja.html", {
         "request": request,
-        "numeros_disponiveis": numeros_disponiveis,
+        "numero_sorteado": None,
         "numeros_sorteados": numeros_sorteados,
-        "numero_sorteado": numero_sorteado,
         "quantidade_inicial": quantidade_inicial
     })
 
-# ==========================
-# SORTEIA UM NÚMERO
-# ==========================
-@app.get("/sortear_web", response_class=HTMLResponse)
-def sortear_web(request: Request):
-    global numeros_disponiveis, numeros_sorteados, numero_sorteado
-    if numeros_disponiveis:
-        numero_sorteado = random.choice(numeros_disponiveis)
-        numeros_disponiveis.remove(numero_sorteado)
-        numeros_sorteados.append(numero_sorteado)
+@app.post("/sortear", response_class=HTMLResponse)
+async def sortear(request: Request):
+    global numeros_sorteados
+    if len(numeros_sorteados) < quantidade_inicial:
+        numero = random.randint(1, quantidade_inicial)
+        while numero in numeros_sorteados:
+            numero = random.randint(1, quantidade_inicial)
+        numeros_sorteados.append(numero)
     else:
-        numero_sorteado = "Todos sorteados!"
+        numero = None
+
     return templates.TemplateResponse("index_igreja.html", {
         "request": request,
-        "numeros_disponiveis": numeros_disponiveis,
+        "numero_sorteado": numero,
         "numeros_sorteados": numeros_sorteados,
-        "numero_sorteado": numero_sorteado,
         "quantidade_inicial": quantidade_inicial
     })
 
-# ==========================
-# RESETAR SORTEIO
-# ==========================
-@app.get("/resetar_web", response_class=HTMLResponse)
-def resetar_web(request: Request):
-    global numeros_disponiveis, numeros_sorteados, numero_sorteado
-    numeros_disponiveis = list(range(1, quantidade_inicial + 1))
+@app.post("/resetar", response_class=HTMLResponse)
+async def resetar(request: Request):
+    global numeros_sorteados
     numeros_sorteados = []
-    numero_sorteado = None
     return templates.TemplateResponse("index_igreja.html", {
         "request": request,
-        "numeros_disponiveis": numeros_disponiveis,
+        "numero_sorteado": None,
         "numeros_sorteados": numeros_sorteados,
-        "numero_sorteado": numero_sorteado,
         "quantidade_inicial": quantidade_inicial
     })
+
+# Para rodar localmente:
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("sorteio_api:app", host="0.0.0.0", port=8000, reload=True)
