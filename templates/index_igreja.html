@@ -14,7 +14,9 @@
     <!-- Fontes Google -->
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ request.url_for('static', path='style.css') }}">
+
+
 
 </head>
 <body>
