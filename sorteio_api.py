@@ -6,26 +6,25 @@ import random
 
 app = FastAPI()
 
-# ✅ Corrigido: nome da rota "static" precisa ser exatamente "static"
+# Monta a rota static ANTES das rotas
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 templates = Jinja2Templates(directory="templates")
 
 numeros_sorteados = []
-quantidade_inicial = 50  # Pode alterar
+quantidade_inicial = 50  # valor global
 
 @app.get("/", response_class=HTMLResponse)
 async def home(request: Request):
-    # usa o valor global definido antes
     return templates.TemplateResponse(
         "index_igreja.html",
         {
-            "request": request,
-            "quantidade_inicial": quantidade_inicial
+            "request": request,  # obrigatório
+            "quantidade_inicial": quantidade_inicial,
+            "numeros_sorteados": numeros_sorteados,
+            "numero_sorteado": None
         }
     )
-
-
 
 @app.post("/sortear", response_class=HTMLResponse)
 async def sortear(request: Request):
