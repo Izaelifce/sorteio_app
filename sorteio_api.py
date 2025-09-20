@@ -16,13 +16,15 @@ quantidade_inicial = 50  # Pode alterar
 
 @app.get("/", response_class=HTMLResponse)
 async def home(request: Request):
-    return templates.TemplateResponse("index_igreja.html", {
-        "request": request,
-        "numero_so"
-        "rteado": None,
-        "numeros_sorteados": numeros_sorteados,
-        "quantidade_inicial": quantidade_inicial
-    })
+    quantidade_inicial = 10  # ou o valor que você usa
+    return templates.TemplateResponse(
+        "index_igreja.html",
+        {
+            "request": request,  # deve ser exatamente "request"
+            "quantidade_inicial": quantidade_inicial
+        }
+    )
+
 
 @app.post("/sortear", response_class=HTMLResponse)
 async def sortear(request: Request):
