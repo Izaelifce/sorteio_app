@@ -1,132 +1,115 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Igreja Estádio Tianguá-CE</title>
-
-    <!-- Favicon -->
-    {# <link rel="icon" type="image/x-icon" href="{{ request.url_for('static', path='favicon.ico') }}">#}
-
-    <!-- CSS externo -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sorteio Igreja do Estádio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ request.url_for('static', path='style.css') }}">
-
-    <!-- Fontes Google -->
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400&display=swap" rel="stylesheet">
-
-    <link rel="stylesheet" href="{{ request.url_for('static', path='style.css') }}">
-
-
-
 </head>
 <body>
-    <!-- Partículas no fundo -->
+    <!-- Fundo animado -->
     <canvas id="bg"></canvas>
 
-    <!-- Patrocinadores -->
-    <div class="patrocinio">
-        <a href="https://www.instagram.com/jjcasafesta/reels/" target="_blank">
-            <img src="{{ request.url_for('static', path='image.jpg') }}" alt="Patrocinador 1">
-        </a>
-        <a href="https://site-do-patrocinador2.com" target="_blank">
-            <img src="{{ request.url_for('static', path='patrocinador2.jpg') }}" alt="Patrocinador 2">
-        </a>
-        <a href="https://instagram.com/empresa3" target="_blank">
-            <img src="{{ request.url_for('static', path='patrocinador3.png') }}" alt="Patrocinador 3">
-        </a>
-    </div>
-
-    <!-- Painel principal -->
     <div class="wrap">
+        <!-- Patrocinadores -->
+        <div class="patrocinio">
+            <img src="{{ request.url_for('static', path='patrocinador1.png') }}" alt="Patrocinador 1">
+            <img src="{{ request.url_for('static', path='patrocinador2.png') }}" alt="Patrocinador 2">
+            <img src="{{ request.url_for('static', path='patrocinador3.png') }}" alt="Patrocinador 3">
+        </div>
+
+        <!-- Título -->
         <h1>SORTEIO IGREJA DO ESTÁDIO</h1>
 
-        {% if numero_sorteado %}
-            <div class="numero-sorteado">🎉 {{ numero_sorteado }}</div>
-        {% endif %}
+        <!-- Número sorteado -->
+        <div class="numero-sorteado" id="numeroSorteado">Nenhum número ainda</div>
 
+        <!-- Botões -->
         <div class="botoes">
-            <form action="/sortear" method="post">
-                <button type="submit">Sortear</button>
-            </form>
-            <form action="/resetar" method="post">
-                <button type="submit">Resetar</button>
-            </form>
+            <button onclick="sortear()">🎲 Sortear</button>
+            <button onclick="resetar()">🔄 Resetar</button>
         </div>
 
-        {% if numeros_sorteados %}
-        <div class="numeros-sorteados">
-            {% for n in numeros_sorteados %}
-                <span>{{ n }}</span>
-            {% endfor %}
-        </div>
-        {% endif %}
-    </div>
+        <!-- Números sorteados -->
+        <div class="numeros-sorteados" id="numerosSorteados"></div>
 
-    <!-- Propaganda / Banner -->
-    <div class="propaganda">
-        <img src="https://via.placeholder.com/900x80?text=An%C3%BAncio+/+Patroc%C3%ADnio" alt="Propaganda">
+        <!-- Propaganda -->
+        <div class="propaganda">
+            <h3>Patrocinado por:</h3>
+            <p>Empresas que apoiam este evento</p>
+        </div>
     </div>
 
     <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const canvas = document.getElementById("bg");
-        if (!canvas) return;
+        function sortear() {
+            const numero = Math.floor(Math.random() * 100) + 1;
+            document.getElementById('numeroSorteado').innerText = numero;
+            const lista = document.getElementById('numerosSorteados');
+            const span = document.createElement('span');
+            span.innerText = numero;
+            lista.appendChild(span);
+        }
 
-        const ctx = canvas.getContext("2d");
+        function resetar() {
+            document.getElementById('numeroSorteado').innerText = "Nenhum número ainda";
+            document.getElementById('numerosSorteados').innerHTML = "";
+        }
+    </script>
+
+    <!-- Fundo animado -->
+    <script>
+        const canvas = document.getElementById('bg');
+        const ctx = canvas.getContext('2d');
         let particles = [];
 
         function resizeCanvas() {
-            const dpr = window.devicePixelRatio || 1;
-            canvas.width = Math.floor(window.innerWidth * dpr);
-            canvas.height = Math.floor(window.innerHeight * dpr);
-            canvas.style.width = window.innerWidth + 'px';
-            canvas.style.height = window.innerHeight + 'px';
-            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
         }
-
-        window.addEventListener("resize", resizeCanvas);
+        window.addEventListener('resize', resizeCanvas);
         resizeCanvas();
 
-        const particleCount = 50;
-        const cssWidth = () => canvas.width / (window.devicePixelRatio || 1);
-        const cssHeight = () => canvas.height / (window.devicePixelRatio || 1);
-
-        for (let i = 0; i < particleCount; i++) {
-            particles.push({
-                x: Math.random() * cssWidth(),
-                y: Math.random() * cssHeight(),
-                r: Math.random() * 2 + 1,
-                d: Math.random() * 1 + 0.2
-            });
-        }
-
-        function update() {
-            const h = cssHeight();
-            const w = cssWidth();
-            for (let p of particles) {
-                p.y += p.d;
-                if (p.y - p.r > h) {
-                    p.y = -p.r;
-                    p.x = Math.random() * w;
-                }
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.radius = Math.random() * 2;
+                this.speedX = (Math.random() - 0.5) * 0.5;
+                this.speedY = (Math.random() - 0.5) * 0.5;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+                if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+            }
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = "#00ffc3";
+                ctx.fill();
             }
         }
 
-        function draw() {
+        function initParticles() {
+            particles = [];
+            for (let i = 0; i < 80; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        function animate() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = 'rgba(0,0,0,0.1)';
-            ctx.beginPath();
-            for (let p of particles) {
-                ctx.moveTo(p.x, p.y);
-                ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-            }
-            ctx.fill();
-            update();
-            requestAnimationFrame(draw);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(animate);
         }
 
-        requestAnimationFrame(draw);
-    });
+        initParticles();
+        animate();
     </script>
 </body>
 </html>
