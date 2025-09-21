@@ -1,40 +1,23 @@
-/* ==============================
-   Estilo Futurista Sorteio Igreja
-   ============================== */
-
-/* Box sizing recomendado */
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-
-/* Fonte e fundo */
 body {
     margin: 0;
     padding: 0;
     font-family: 'Roboto', sans-serif;
     background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
     color: #ffffff;
-    min-height: 100vh;
 }
 
-/* Container principal (wrap) */
-.container, .wrap {
+.wrap {
     max-width: 600px;
     margin: 50px auto;
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(255,255,255,0.05);
     padding: 30px;
     border-radius: 20px;
-    box-shadow: 0 0 25px rgba(0, 255, 255, 0.12);
+    box-shadow: 0 0 25px rgba(0,255,255,0.2);
     text-align: center;
     backdrop-filter: blur(10px);
-    position: relative;     /* garante empilhamento */
-    z-index: 2;             /* fica acima do canvas */
 }
 
-/* Título */
-.container h1, .wrap h1 {
+.wrap h1 {
     font-family: 'Orbitron', sans-serif;
     font-size: 2.5em;
     color: #00ffff;
@@ -42,7 +25,6 @@ body {
     margin-bottom: 20px;
 }
 
-/* Botões futuristas */
 button {
     padding: 12px 30px;
     margin: 10px;
@@ -54,18 +36,16 @@ button {
     font-weight: bold;
     cursor: pointer;
     transition: all 0.3s ease;
-    /* use inset explicitamente antes do segundo shadow para compatibilidade */
-    box-shadow: 0 0 10px #00ffff, inset 0 0 20px #00ffff;
+    box-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff inset;
 }
 
 button:hover {
     background: #00ffff;
     color: #0f2027;
-    box-shadow: 0 0 20px #00ffff, inset 0 0 30px #00ffff;
+    box-shadow: 0 0 20px #00ffff, 0 0 30px #00ffff inset;
     transform: scale(1.05);
 }
 
-/* Número sorteado */
 .numero-sorteado {
     font-size: 3em;
     margin: 25px 0;
@@ -74,7 +54,6 @@ button:hover {
     text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff;
 }
 
-/* Histórico de números sorteados */
 .numeros-sorteados {
     margin-top: 20px;
     display: flex;
@@ -84,7 +63,7 @@ button:hover {
 }
 
 .numeros-sorteados span {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255,255,255,0.1);
     color: #00ffff;
     padding: 12px 18px;
     border-radius: 50%;
@@ -92,7 +71,6 @@ button:hover {
     box-shadow: 0 0 8px #00ffff;
 }
 
-/* Patrocinadores */
 .patrocinio {
     display: flex;
     justify-content: center;
@@ -108,8 +86,6 @@ button:hover {
     border-radius: 15px;
     box-shadow: 0 0 15px #00ffff;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    display: block;
-    margin: 0 10px;
 }
 
 .patrocinio img:hover {
@@ -117,19 +93,11 @@ button:hover {
     box-shadow: 0 0 25px #ff00ff, 0 0 40px #00ffff;
 }
 
-/* Propaganda / Banner */
 .propaganda {
     text-align: center;
     margin: 30px 0;
 }
 
-.propaganda img {
-    max-width: 100%;
-    border-radius: 15px;
-    box-shadow: 0 0 20px #00ffff;
-}
-
-/* Canvas partículas (se tiver) */
 canvas#bg {
     position: fixed;
     top: 0;
@@ -137,5 +105,4 @@ canvas#bg {
     width: 100%;
     height: 100%;
     z-index: -1;
-    pointer-events: none; /* importante: permite clicar em botões sobre o canvas */
 }
