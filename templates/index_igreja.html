@@ -8,10 +8,16 @@
     <link rel="stylesheet" href="{{ request.url_for('static', path='style.css') }}">
 </head>
 <body>
-    <!-- Fundo animado -->
     <canvas id="bg"></canvas>
 
     <div class="wrap">
+        <!-- Patrocinadores -->
+        <div class="patrocinio">
+            <img src="{{ request.url_for('static', path='patrocinador1.png') }}" alt="Patrocinador 1">
+            <img src="{{ request.url_for('static', path='patrocinador2.png') }}" alt="Patrocinador 2">
+            <img src="{{ request.url_for('static', path='patrocinador3.png') }}" alt="Patrocinador 3">
+        </div>
+
         <!-- Título -->
         <h1>SORTEIO IGREJA DO ESTÁDIO</h1>
 
@@ -24,35 +30,27 @@
             <button onclick="resetar()">🔄 Resetar</button>
         </div>
 
-        <!-- Números sorteados -->
+        <!-- Histórico de números -->
         <div class="numeros-sorteados" id="numerosSorteados"></div>
 
-        <!-- Patrocinadores em cards -->
-        <div class="patrocinadores">
-            <h3>Patrocinado por</h3>
-            <div class="logos">
-                <div class="card-patrocinador">
-                    <img src="{{ request.url_for('static', path='patrocinador1.png') }}" alt="Patrocinador 1">
-                    <p>Patrocinador 1</p>
-                </div>
-
-                
-                <div class="card-patrocinador">
-                    <img src="{{ request.url_for('static', path='patrocinador2.png') }}" alt="Patrocinador 2">
-                    <p>Patrocinador 2</p>
-                </div>
-                <div class="card-patrocinador">
-                    <img src="{{ request.url_for('static', path='patrocinador3.png') }}" alt="Patrocinador 3">
-                    <p>Patrocinador 3</p>
-                </div>
-            </div>
+        <!-- Propaganda -->
+        <div class="propaganda">
+            <h3>Patrocinado por:</h3>
+            <p>Empresas que apoiam este evento</p>
         </div>
     </div>
 
     <script>
-        function sortear() {
-            const numero = Math.floor(Math.random() * 100) + 1;
-            document.getElementById('numeroSorteado').innerText = numero;
+        async function sortear() {
+            const response = await fetch("/sortear");
+            const data = await response.json();
+            const numero = data.numero;
+
+            // Atualiza número principal
+            const numeroDiv = document.getElementById('numeroSorteado');
+            numeroDiv.innerText = numero;
+
+            // Adiciona ao histórico
             const lista = document.getElementById('numerosSorteados');
             const span = document.createElement('span');
             span.innerText = numero;
@@ -121,5 +119,3 @@
     </script>
 </body>
 </html>
-
-
