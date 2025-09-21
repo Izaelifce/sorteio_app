@@ -1,66 +1,110 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-
     <meta charset="UTF-8">
-    <title>Sorteio Interativo</title>
-    <style>
-        body { font-family: Arial; background: #28a745(0 94% 3% / 0.144); color: #333; margin:0; padding:0; }
-        .container { max-width: 800px; margin: 50px auto; padding:20px; background:#fff; border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.1);}
-        h1,h3 { text-align:center;}
-        form { display:flex; justify-content:center; gap:10px; margin-bottom:20px; }
-        input[type=number]{ padding:8px; border-radius:6px; border:1px solid #ccc; width:100px; text-align:center;}
-        button { padding:8px 16px; border-radius:6px; border:none; cursor:pointer; font-weight:bold; color:#fff; }
-        .btn-inicializar { background:#007bff; }
-        .btn-sortear { background:#28a745; }
-        .btn-resetar { background:#dc3545; }
-        .numero-sorteado { background:#ffc107; padding:15px; border-radius:10px; font-size:24px; font-weight:bold; text-align:center; margin-bottom:20px;}
-        .listas { display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap; }
-        .listas .card { flex:1 1 45%; background:gray; padding:15px; border-radius:10px; text-align:center; }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sorteio Igreja do Estádio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ request.url_for('static', path='style.css') }}">
 </head>
 <body>
-<div class="container">
-    <h1>SORTEIO IGREJA DO ESTÁDIO</h1>
+    <!-- Fundo animado -->
+    <canvas id="bg"></canvas>
 
-    <form method="post" action="/inicializar_web">
-        <input type="number" name="quantidade" min="1" placeholder="Quantidade" required>
-        <button type="submit" class="btn-inicializar">Inicializar</button>
-    </form>
-
-    <div style="text-align:center; margin-bottom:20px;">
-        <a href="/sortear_web"><button class="btn-sortear">Sortear</button></a>
-        <a href="/resetar_web"><button class="btn-resetar">Resetar</button></a>
-    </div>
-
-    <div class="numero-sorteado">
-        Número sorteado: {{ numero_sorteado if numero_sorteado else '-' }}
-    </div>
-
-    <div class="listas">
-        <div class="card">
-            <h3>Números sorteados</h3>
-            <p>
-                {% if numeros_sorteados %}
-                    {{ numeros_sorteados | join(', ') }}
-                {% else %}
-                    Nenhum número sorteado ainda.
-                {% endif %}
-            </p>
+    <!-- Container principal -->
+    <div class="wrap">
+        <!-- Patrocinadores -->
+        <div class="patrocinio">
+            <img src="{{ request.url_for('static', path='patrocinador1.png') }}" alt="Patrocinador 1">
+            <img src="{{ request.url_for('static', path='patrocinador2.png') }}" alt="Patrocinador 2">
+            <img src="{{ request.url_for('static', path='patrocinador3.png') }}" alt="Patrocinador 3">
         </div>
 
-        <div class="card">
-            <h3>Números restantes</h3>
-            <p>
-                {% if numeros_disponiveis %}
-                    {{ numeros_disponiveis | join(', ') }}
-                {% else %}
-                    Nenhum número restante.
-                {% endif %}
-            </p>
+        <!-- Título -->
+        <h1>SORTEIO IGREJA DO ESTÁDIO</h1>
+
+        <!-- Número sorteado -->
+        <div class="numero-sorteado" id="numeroSorteado">
+            {% if numero_sorteado %}{{ numero_sorteado }}{% else %}Nenhum número ainda{% endif %}
+        </div>
+
+        <!-- Botões -->
+        <div class="botoes">
+            <form method="post" action="/sortear" style="display:inline;">
+                <button type="submit">🎲 Sortear</button>
+            </form>
+            <form method="post" action="/resetar" style="display:inline;">
+                <button type="submit">🔄 Resetar</button>
+            </form>
+        </div>
+
+        <!-- Números sorteados -->
+        <div class="numeros-sorteados" id="numerosSorteados">
+            {% for n in numeros_sorteados %}
+                <span>{{ n }}</span>
+            {% endfor %}
+        </div>
+
+        <!-- Propaganda / Banner -->
+        <div class="propaganda">
+            <h3>Patrocinado por:</h3>
+            <p>Empresas que apoiam este evento</p>
         </div>
     </div>
-</div>
+
+    <!-- Fundo animado -->
+    <script>
+        const canvas = document.getElementById('bg');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.radius = Math.random() * 2;
+                this.speedX = (Math.random() - 0.5) * 0.5;
+                this.speedY = (Math.random() - 0.5) * 0.5;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+                if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+            }
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = "#00ffc3";
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            particles = [];
+            for (let i = 0; i < 80; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(animate);
+        }
+
+        initParticles();
+        animate();
+    </script>
 </body>
 </html>
