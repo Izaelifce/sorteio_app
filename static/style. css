@@ -2,6 +2,13 @@
    Estilo Futurista Sorteio Igreja
    ============================== */
 
+/* Box sizing recomendado */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 /* Fonte e fundo */
 body {
     margin: 0;
@@ -9,18 +16,21 @@ body {
     font-family: 'Roboto', sans-serif;
     background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
     color: #ffffff;
+    min-height: 100vh;
 }
 
-/* Container principal */
+/* Container principal (wrap) */
 .container, .wrap {
     max-width: 600px;
     margin: 50px auto;
     background: rgba(255, 255, 255, 0.05);
     padding: 30px;
     border-radius: 20px;
-    box-shadow: 0 0 25px rgba(0, 255, 255, 0.2);
+    box-shadow: 0 0 25px rgba(0, 255, 255, 0.12);
     text-align: center;
     backdrop-filter: blur(10px);
+    position: relative;     /* garante empilhamento */
+    z-index: 2;             /* fica acima do canvas */
 }
 
 /* Título */
@@ -44,13 +54,14 @@ button {
     font-weight: bold;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff inset;
+    /* use inset explicitamente antes do segundo shadow para compatibilidade */
+    box-shadow: 0 0 10px #00ffff, inset 0 0 20px #00ffff;
 }
 
 button:hover {
     background: #00ffff;
     color: #0f2027;
-    box-shadow: 0 0 20px #00ffff, 0 0 30px #00ffff inset;
+    box-shadow: 0 0 20px #00ffff, inset 0 0 30px #00ffff;
     transform: scale(1.05);
 }
 
@@ -97,6 +108,8 @@ button:hover {
     border-radius: 15px;
     box-shadow: 0 0 15px #00ffff;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: block;
+    margin: 0 10px;
 }
 
 .patrocinio img:hover {
@@ -124,4 +137,5 @@ canvas#bg {
     width: 100%;
     height: 100%;
     z-index: -1;
+    pointer-events: none; /* importante: permite clicar em botões sobre o canvas */
 }
