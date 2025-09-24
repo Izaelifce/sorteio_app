@@ -10,52 +10,103 @@
     <canvas id="bg"></canvas>
 
     <div class="wrap">
-        <div class="patrocinio">
-            <img src="{{ request.url_for('static', path='patrocinador1.png') }}" alt="Patrocinador 1">
-            <img src="{{ request.url_for('static', path='patrocinador2.png') }}" alt="Patrocinador 2">
-            <img src="{{ request.url_for('static', path='patrocinador3.png') }}" alt="Patrocinador 3">
-        </div>
-
-        <h1>SORTEIO IGREJA DO ESTÁDIO</h1>
-
-        <div class="numero-sorteado" id="numeroSorteado">
-            {% if numero_sorteado %}{{ numero_sorteado }}{% else %}Nenhum número ainda{% endif %}
-        </div>
-
-        <div class="botoes">
-            <form method="post" action="/sortear" style="display:inline;">
-                <label>Quantidade de números: </label>
-             <input type="number" id="quantidade" min="1" max="100" value="10">
-         <br>
-                <!-- Coloque este trecho logo acima do botão "Sortear" -->
-                <label>Quantidade de números: </label>
-                <input type="number" id="quantidade" min="1" value="10" style="width:80px">
-
-                <label style="margin-left:10px">De</label>
-                <input type="number" id="minimo" min="1" value="1" style="width:70px">
-
-                <label>até</label>
-                <input type="number" id="maximo" min="1" value="50" style="width:70px">
-                <br><br>
-
-                <button type="submit">🎲 Sortear</button>
-            </form>
-            <form method="post" action="/resetar" style="display:inline;">
-                <button type="submit">🔄 Resetar</button>
-            </form>
-        </div>
-
-        <div class="numeros-sorteados" id="numerosSorteados">
-            {% for n in numeros_sorteados %}
-                <span>{{ n }}</span>
-            {% endfor %}
-        </div>
-
-        <div class="propaganda">
-            <h3>Patrocinado por:</h3>
-            <p>Empresas que apoiam este evento</p>
-        </div>
+    <div class="patrocinio">
+        <img src="{{ request.url_for('static', path='patrocinador1.png') }}" alt="Patrocinador 1">
+        <img src="{{ request.url_for('static', path='patrocinador2.png') }}" alt="Patrocinador 2">
+        <img src="{{ request.url_for('static', path='patrocinador3.png') }}" alt="Patrocinador 3">
     </div>
+
+    <h1>SORTEIO IGREJA DO ESTÁDIO</h1>
+
+    <div class="numero-sorteado" id="numero-sorteado">
+        {% if numero_sorteado %}{{ numero_sorteado }}{% else %}Nenhum número ainda{% endif %}
+    </div>
+
+    <div class="botoes">
+        <!-- ✅ MANTER SOMENTE UM BLOCO DE QUANTIDADE -->
+        <label>Quantidade:</label>
+        <input type="number" id="quantidade" min="1" value="10" style="width:80px">
+
+        <label style="margin-left:10px">De</label>
+        <input type="number" id="minimo" min="1" value="1" style="width:70px">
+
+        <label>até</label>
+        <input type="number" id="maximo" min="1" value="50" style="width:70px">
+        <br><br>
+
+        <!-- ✅ BOTÕES CHAMANDO FUNÇÕES JS (SEM RECARREGAR PÁGINA) -->
+        <button onclick="sortear()">🎲 Sortear</button>
+        <button onclick="resetar()">🔄 Resetar</button>
+    </div>
+
+    <div class="numeros-sorteados" id="numeros-sorteados">
+        {% for n in numeros_sorteados %}
+            <span>{{ n }}</span>
+        {% endfor %}
+    </div>
+
+    <div class="propaganda">
+        <h3>Patrocinado por:</h3>
+        <p>Empresas que apoiam este evento</p>
+    </div>
+</div>
+
+<script>
+function getById(id) { return document.getElementById(id); }
+
+function sortear() {
+    const qtd = parseInt(getById('quantidade').value, 10);
+    const min = parseInt(getById('minimo').value, 10);
+    const max = parseInt(getById('maximo').value, 10);
+
+    if (!Number.isInteger(qtd) || qtd <= 0) {
+        alert('Digite uma quantidade válida!');
+        return;
+    }
+    if (min > max) {
+        alert('O valor mínimo não pode ser maior que o máximo!');
+        return;
+    }
+    const intervalo = max - min + 1;
+    if (qtd > intervalo) {
+        alert(`Não é possível sortear ${qtd} números, pois o intervalo só tem ${intervalo}.`);
+        return;
+    }
+
+    // Criar lista de números e embaralhar
+    const pool = [];
+    for (let i = min; i <= max; i++) pool.push(i);
+    for (let i = pool.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [pool[i], pool[j]] = [pool[j], pool[i]];
+    }
+    const escolhidos = pool.slice(0, qtd);
+
+    // Mostrar resultado na tela
+    getById('numero-sorteado').textContent = "Números sorteados:";
+    const container = getById('numeros-sorteados');
+    container.innerHTML = "";
+    escolhidos.forEach(n => {
+        const span = document.createElement('span');
+        span.textContent = n;
+        span.style.background = "#00ffc3";
+        span.style.color = "#000";
+        span.style.fontWeight = "bold";
+        span.style.padding = "6px 10px";
+        span.style.borderRadius = "50%";
+        span.style.margin = "4px";
+        container.appendChild(span);
+    });
+}
+
+function resetar() {
+    getById('numero-sorteado').textContent = "";
+    getById('numeros-sorteados').innerHTML = "";
+    getById('quantidade').value = 10;
+    getById('minimo').value = 1;
+    getById('maximo').value = 50;
+}
+</script>
 
     <script>
         const canvas = document.getElementById('bg');
