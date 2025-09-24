@@ -3,142 +3,119 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sorteio Igreja do Estádio</title>
+<title>Sorteio Futurista</title>
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
 
-    body {
-        margin: 0;
-        padding: 0;
-        font-family: 'Orbitron', sans-serif;
-        background: radial-gradient(circle at top, #0d1117, #000);
-        color: #00ffc3;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: flex-start;
-        min-height: 100vh;
-    }
+body {
+    margin: 0;
+    padding: 20px;
+    font-family: 'Orbitron', sans-serif;
+    background: radial-gradient(circle at top, #0d1117, #000);
+    color: #00ffc3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
 
-    h1 {
-        margin-top: 20px;
-        font-size: 2rem;
-        text-shadow: 0 0 10px #00ffc3, 0 0 20px #00ffc3;
-    }
+h1 {
+    font-size: 2rem;
+    text-shadow: 0 0 10px #00ffc3, 0 0 20px #00ffc3;
+    margin-bottom: 20px;
+}
 
-    .card {
-        background: rgba(255, 255, 255, 0.05);
-        backdrop-filter: blur(6px);
-        border: 1px solid #00ffc3;
-        border-radius: 15px;
-        box-shadow: 0 0 15px #00ffc3;
-        padding: 20px;
-        margin: 20px;
-        text-align: center;
-        width: 90%;
-        max-width: 500px;
-    }
+.card {
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(6px);
+    border: 1px solid #00ffc3;
+    border-radius: 15px;
+    box-shadow: 0 0 15px #00ffc3;
+    padding: 20px;
+    margin: 15px 0;
+    text-align: center;
+    width: 90%;
+    max-width: 600px;
+}
 
-    .inputs {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-    }
+.numeros {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 15px;
+}
 
-    .inputs input {
-        padding: 10px;
-        border-radius: 8px;
-        border: none;
-        text-align: center;
-        font-size: 1.2rem;
-        background: #111;
-        color: #00ffc3;
-        box-shadow: inset 0 0 5px #00ffc3;
-    }
+.numero {
+    background: #00ffc3;
+    color: #000;
+    font-weight: bold;
+    padding: 15px;
+    border-radius: 50%;
+    min-width: 50px;
+    text-align: center;
+    font-size: 1.2rem;
+    box-shadow: 0 0 10px #00ffc3, 0 0 20px #00ffc3;
+    opacity: 0;
+    transform: scale(0);
+    animation: aparecer 0.5s forwards;
+}
 
-    .btns {
-        margin-top: 15px;
-        display: flex;
-        gap: 10px;
-        justify-content: center;
+@keyframes aparecer {
+    to {
+        opacity: 1;
+        transform: scale(1);
     }
+}
 
-    button {
-        padding: 10px 20px;
-        border: none;
-        border-radius: 10px;
-        background: #00ffc3;
-        color: #000;
-        font-size: 1rem;
-        font-weight: bold;
-        cursor: pointer;
-        box-shadow: 0 0 10px #00ffc3;
-        transition: transform 0.2s, background 0.2s;
-    }
+button {
+    padding: 12px 25px;
+    margin: 10px;
+    border-radius: 10px;
+    border: none;
+    background: #00ffc3;
+    color: #000;
+    font-weight: bold;
+    font-size: 1rem;
+    cursor: pointer;
+    box-shadow: 0 0 10px #00ffc3;
+    transition: transform 0.2s, background 0.2s;
+}
 
-    button:hover {
-        transform: scale(1.05);
-        background: #00e0ad;
-    }
+button:hover {
+    transform: scale(1.05);
+    background: #00e0ad;
+}
 
-    .numeros-sorteados {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-        justify-content: center;
-        margin-top: 15px;
-    }
+.patrocinio {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    opacity: 0.7;
+}
 
-    .numero {
-        background: #00ffc3;
-        color: #000;
-        font-weight: bold;
-        padding: 12px;
-        border-radius: 50%;
-        min-width: 40px;
-        text-align: center;
-        box-shadow: 0 0 10px #00ffc3, 0 0 20px #00ffc3;
-    }
-
-    .patrocinio {
-        margin-top: 20px;
-        display: flex;
-        justify-content: center;
-        gap: 15px;
-        opacity: 0.7;
-    }
-
-    .patrocinio img {
-        height: 40px;
-        filter: drop-shadow(0 0 5px #00ffc3);
-    }
+.patrocinio img {
+    height: 40px;
+    filter: drop-shadow(0 0 5px #00ffc3);
+}
 </style>
 </head>
 <body>
 
-<h1>SORTEIO IGREJA DO ESTÁDIO</h1>
+<h1>SORTEIO FUTURISTA</h1>
 
 <div class="card">
-    <h2>Configuração</h2>
-    <div class="inputs">
-        <label>Quantidade de números:</label>
-        <input type="number" id="quantidade" min="1" value="10">
-        <label>Intervalo:</label>
-        <div style="display:flex; justify-content:center; gap:10px;">
-            <input type="number" id="minimo" min="1" value="1">
-            <input type="number" id="maximo" min="1" value="50">
-        </div>
-    </div>
-    <div class="btns">
-        <button onclick="sortear()">🎲 Sortear</button>
-        <button onclick="resetar()">🔄 Resetar</button>
-    </div>
+    <h2>Números disponíveis</h2>
+    <div class="numeros" id="numeros-disponiveis"></div>
 </div>
 
 <div class="card">
-    <h2>Resultado</h2>
-    <div class="numeros-sorteados" id="numeros-sorteados"></div>
+    <h2>Números sorteados</h2>
+    <div class="numeros" id="numeros-sorteados"></div>
 </div>
+
+<button onclick="sortearNumero()">🎲 Sortear Número</button>
+<button onclick="resetar()">🔄 Resetar</button>
 
 <div class="patrocinio">
     <img src="{{ request.url_for('static', path='patrocinador1.png') }}" alt="Patrocinador 1">
@@ -147,52 +124,69 @@
 </div>
 
 <script>
-function getById(id) { return document.getElementById(id); }
+let numerosDisponiveis = [];
+let numerosSorteados = [];
 
-function sortear() {
-    const qtd = parseInt(getById('quantidade').value, 10);
-    const min = parseInt(getById('minimo').value, 10);
-    const max = parseInt(getById('maximo').value, 10);
+// Inicializa a lista de 1 a 50
+function inicializar() {
+    numerosDisponiveis = [];
+    numerosSorteados = [];
+    for (let i = 1; i <= 50; i++) numerosDisponiveis.push(i);
+    atualizarTelas();
+}
 
-    if (!Number.isInteger(qtd) || qtd <= 0) {
-        alert('Digite uma quantidade válida!');
-        return;
-    }
-    if (min > max) {
-        alert('O valor mínimo não pode ser maior que o máximo!');
-        return;
-    }
+function atualizarTelas() {
+    const disp = document.getElementById('numeros-disponiveis');
+    const sort = document.getElementById('numeros-sorteados');
 
-    const intervalo = max - min + 1;
-    if (qtd > intervalo) {
-        alert(`Não é possível sortear ${qtd} números, o intervalo só tem ${intervalo}.`);
-        return;
-    }
+    disp.innerHTML = '';
+    sort.innerHTML = '';
 
-    const pool = [];
-    for (let i = min; i <= max; i++) pool.push(i);
-    for (let i = pool.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [pool[i], pool[j]] = [pool[j], pool[i]];
-    }
-    const escolhidos = pool.slice(0, qtd);
-
-    const container = getById('numeros-sorteados');
-    container.innerHTML = "";
-    escolhidos.forEach(n => {
+    numerosDisponiveis.forEach(n => {
         const span = document.createElement('span');
-        span.className = "numero";
+        span.className = 'numero';
+        span.style.animation = 'aparecer 0.5s forwards';
         span.textContent = n;
-        container.appendChild(span);
+        disp.appendChild(span);
+    });
+
+    if (numerosDisponiveis.length === 0) {
+        const msg = document.createElement('div');
+        msg.textContent = "Não há mais números para sortear!";
+        msg.style.marginTop = '15px';
+        msg.style.fontWeight = 'bold';
+        msg.style.fontSize = '1.2rem';
+        sort.appendChild(msg);
+    }
+
+    numerosSorteados.forEach(n => {
+        const span = document.createElement('span');
+        span.className = 'numero';
+        span.style.animation = 'aparecer 0.5s forwards';
+        span.textContent = n;
+        sort.appendChild(span);
     });
 }
 
-function resetar() {
-    getById('numeros-sorteados').innerHTML = "";
-    getById('quantidade').value = 10;
-    getById('minimo').value = 1;
-    getById('maximo').value = 50;
+function sortearNumero() {
+    if (numerosDisponiveis.length === 0) {
+        alert("Não há mais números para sortear!");
+        return;
+    }
+
+    // Pega um número aleatório e remove da lista
+    const indice = Math.floor(Math.random() * numerosDisponiveis.length);
+    const numero = numerosDisponiveis.splice(indice, 1)[0];
+    numerosSorteados.push(numero);
+    atualizarTelas();
 }
+
+function resetar() {
+    inicializar();
+}
+
+// Inicializa ao carregar
+inicializar();
 </script>
 
 </body>
