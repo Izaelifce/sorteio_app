@@ -1,54 +1,149 @@
 <!DOCTYPE html>
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sorteio Igreja do Estádio</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ request.url_for('static', path='style.css') }}">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sorteio Igreja do Estádio</title>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
+
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Orbitron', sans-serif;
+        background: radial-gradient(circle at top, #0d1117, #000);
+        color: #00ffc3;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        min-height: 100vh;
+    }
+
+    h1 {
+        margin-top: 20px;
+        font-size: 2rem;
+        text-shadow: 0 0 10px #00ffc3, 0 0 20px #00ffc3;
+    }
+
+    .card {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(6px);
+        border: 1px solid #00ffc3;
+        border-radius: 15px;
+        box-shadow: 0 0 15px #00ffc3;
+        padding: 20px;
+        margin: 20px;
+        text-align: center;
+        width: 90%;
+        max-width: 500px;
+    }
+
+    .inputs {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .inputs input {
+        padding: 10px;
+        border-radius: 8px;
+        border: none;
+        text-align: center;
+        font-size: 1.2rem;
+        background: #111;
+        color: #00ffc3;
+        box-shadow: inset 0 0 5px #00ffc3;
+    }
+
+    .btns {
+        margin-top: 15px;
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+    }
+
+    button {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 10px;
+        background: #00ffc3;
+        color: #000;
+        font-size: 1rem;
+        font-weight: bold;
+        cursor: pointer;
+        box-shadow: 0 0 10px #00ffc3;
+        transition: transform 0.2s, background 0.2s;
+    }
+
+    button:hover {
+        transform: scale(1.05);
+        background: #00e0ad;
+    }
+
+    .numeros-sorteados {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: center;
+        margin-top: 15px;
+    }
+
+    .numero {
+        background: #00ffc3;
+        color: #000;
+        font-weight: bold;
+        padding: 12px;
+        border-radius: 50%;
+        min-width: 40px;
+        text-align: center;
+        box-shadow: 0 0 10px #00ffc3, 0 0 20px #00ffc3;
+    }
+
+    .patrocinio {
+        margin-top: 20px;
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        opacity: 0.7;
+    }
+
+    .patrocinio img {
+        height: 40px;
+        filter: drop-shadow(0 0 5px #00ffc3);
+    }
+</style>
 </head>
 <body>
-    <canvas id="bg"></canvas>
 
-    <div class="wrap">
-    <div class="patrocinio">
-        <img src="{{ request.url_for('static', path='patrocinador1.png') }}" alt="Patrocinador 1">
-        <img src="{{ request.url_for('static', path='patrocinador2.png') }}" alt="Patrocinador 2">
-        <img src="{{ request.url_for('static', path='patrocinador3.png') }}" alt="Patrocinador 3">
+<h1>SORTEIO IGREJA DO ESTÁDIO</h1>
+
+<div class="card">
+    <h2>Configuração</h2>
+    <div class="inputs">
+        <label>Quantidade de números:</label>
+        <input type="number" id="quantidade" min="1" value="10">
+        <label>Intervalo:</label>
+        <div style="display:flex; justify-content:center; gap:10px;">
+            <input type="number" id="minimo" min="1" value="1">
+            <input type="number" id="maximo" min="1" value="50">
+        </div>
     </div>
-
-    <h1>SORTEIO IGREJA DO ESTÁDIO</h1>
-
-    <div class="numero-sorteado" id="numero-sorteado">
-        {% if numero_sorteado %}{{ numero_sorteado }}{% else %}Nenhum número ainda{% endif %}
-    </div>
-
-    <div class="botoes">
-        <!-- ✅ MANTER SOMENTE UM BLOCO DE QUANTIDADE -->
-        <label>Quantidade:</label>
-        <input type="number" id="quantidade" min="1" value="10" style="width:80px">
-
-        <label style="margin-left:10px">De</label>
-        <input type="number" id="minimo" min="1" value="1" style="width:70px">
-
-        <label>até</label>
-        <input type="number" id="maximo" min="1" value="50" style="width:70px">
-        <br><br>
-
-        <!-- ✅ BOTÕES CHAMANDO FUNÇÕES JS (SEM RECARREGAR PÁGINA) -->
+    <div class="btns">
         <button onclick="sortear()">🎲 Sortear</button>
         <button onclick="resetar()">🔄 Resetar</button>
     </div>
+</div>
 
-    <div class="numeros-sorteados" id="numeros-sorteados">
-        {% for n in numeros_sorteados %}
-            <span>{{ n }}</span>
-        {% endfor %}
-    </div>
+<div class="card">
+    <h2>Resultado</h2>
+    <div class="numeros-sorteados" id="numeros-sorteados"></div>
+</div>
 
-    <div class="propaganda">
-        <h3>Patrocinado por:</h3>
-        <p>Empresas que apoiam este evento</p>
-    </div>
+<div class="patrocinio">
+    <img src="{{ request.url_for('static', path='patrocinador1.png') }}" alt="Patrocinador 1">
+    <img src="{{ request.url_for('static', path='patrocinador2.png') }}" alt="Patrocinador 2">
+    <img src="{{ request.url_for('static', path='patrocinador3.png') }}" alt="Patrocinador 3">
 </div>
 
 <script>
@@ -67,13 +162,13 @@ function sortear() {
         alert('O valor mínimo não pode ser maior que o máximo!');
         return;
     }
+
     const intervalo = max - min + 1;
     if (qtd > intervalo) {
-        alert(`Não é possível sortear ${qtd} números, pois o intervalo só tem ${intervalo}.`);
+        alert(`Não é possível sortear ${qtd} números, o intervalo só tem ${intervalo}.`);
         return;
     }
 
-    // Criar lista de números e embaralhar
     const pool = [];
     for (let i = min; i <= max; i++) pool.push(i);
     for (let i = pool.length - 1; i > 0; i--) {
@@ -82,25 +177,17 @@ function sortear() {
     }
     const escolhidos = pool.slice(0, qtd);
 
-    // Mostrar resultado na tela
-    getById('numero-sorteado').textContent = "Números sorteados:";
     const container = getById('numeros-sorteados');
     container.innerHTML = "";
     escolhidos.forEach(n => {
         const span = document.createElement('span');
+        span.className = "numero";
         span.textContent = n;
-        span.style.background = "#00ffc3";
-        span.style.color = "#000";
-        span.style.fontWeight = "bold";
-        span.style.padding = "6px 10px";
-        span.style.borderRadius = "50%";
-        span.style.margin = "4px";
         container.appendChild(span);
     });
 }
 
 function resetar() {
-    getById('numero-sorteado').textContent = "";
     getById('numeros-sorteados').innerHTML = "";
     getById('quantidade').value = 10;
     getById('minimo').value = 1;
@@ -108,54 +195,5 @@ function resetar() {
 }
 </script>
 
-    <script>
-        const canvas = document.getElementById('bg');
-        const ctx = canvas.getContext('2d');
-        let particles = [];
-
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-        window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
-
-        class Particle {
-            constructor() {
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height;
-                this.radius = Math.random() * 2;
-                this.speedX = (Math.random() - 0.5) * 0.5;
-                this.speedY = (Math.random() - 0.5) * 0.5;
-            }
-            update() {
-                this.x += this.speedX;
-                this.y += this.speedY;
-                if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
-                if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
-            }
-            draw() {
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-                ctx.fillStyle = "#00ffc3";
-                ctx.fill();
-            }
-        }
-
-        function initParticles() {
-            particles = [];
-            for (let i = 0; i < 80; i++) {
-                particles.push(new Particle());
-            }
-        }
-
-        function animate() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            particles.forEach(p => {
-                p.update();
-                p.draw();
-            });
-            requestAnimationFrame(animate);
-        }
-
-  
+</body>
+</html>
