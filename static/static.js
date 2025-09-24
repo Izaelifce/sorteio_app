@@ -1,16 +1,26 @@
 document.addEventListener("DOMContentLoaded", () => {
     // Atualiza o número sorteado e o histórico
-    window.updateNumero = function(numero) {
-        const numeroDiv = document.getElementById("numeroSorteado"); // ID deve ser igual ao HTML
-        numeroDiv.textContent = numero || "Nenhum número ainda";
+    function sortear() {
+    const qtd = parseInt(document.getElementById("quantidade").value);
+    if (isNaN(qtd) || qtd <= 0) {
+        alert("Digite uma quantidade válida!");
+        return;
+    }
 
-        const historico = document.getElementById("numerosSorteados"); // ID igual ao HTML
-        if (numero) {
-            const novoSpan = document.createElement("span");
-            novoSpan.textContent = numero;
-            historico.appendChild(novoSpan);
+    let numeros = [];
+    while (numeros.length < qtd) {
+        let n = Math.floor(Math.random() * (qtd * 2)) + 1;
+        if (!numeros.includes(n)) {
+            numeros.push(n);
         }
-    };
+    }
+
+    // Aqui usamos os IDs que você já tem no HTML
+    document.getElementById("numero-sorteado").textContent = "Números sorteados:";
+    document.getElementById("numeros-sorteados").textContent = numeros.join(", ");
+}
+
+    
 
     // Limpa o número sorteado e histórico
     window.resetNumeros = function() {
