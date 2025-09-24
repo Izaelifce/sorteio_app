@@ -30,41 +30,23 @@ h1 {
     border: 1px solid #00ffc3;
     border-radius: 15px;
     box-shadow: 0 0 15px #00ffc3;
-    padding: 20px;
+    padding: 30px 20px;
     margin: 15px 0;
     text-align: center;
     width: 90%;
-    max-width: 600px;
+    max-width: 400px;
 }
 
-.numeros {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 10px;
-    margin-top: 15px;
-}
-
-.numero {
-    background: #00ffc3;
-    color: #000;
-    font-weight: bold;
-    padding: 15px;
-    border-radius: 50%;
-    min-width: 50px;
+input {
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
     text-align: center;
     font-size: 1.2rem;
-    box-shadow: 0 0 10px #00ffc3, 0 0 20px #00ffc3;
-    opacity: 0;
-    transform: scale(0);
-    animation: aparecer 0.5s forwards;
-}
-
-@keyframes aparecer {
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
+    background: #111;
+    color: #00ffc3;
+    box-shadow: inset 0 0 5px #00ffc3;
+    width: 100px;
 }
 
 button {
@@ -86,6 +68,19 @@ button:hover {
     background: #00e0ad;
 }
 
+.numero-sorteado {
+    margin-top: 20px;
+    font-size: 4rem;
+    font-weight: bold;
+    text-shadow: 0 0 15px #00ffc3, 0 0 30px #00ffc3;
+    animation: aparecer 0.5s forwards;
+}
+
+@keyframes aparecer {
+    from { opacity: 0; transform: scale(0); }
+    to { opacity: 1; transform: scale(1); }
+}
+
 .patrocinio {
     margin-top: 20px;
     display: flex;
@@ -105,13 +100,15 @@ button:hover {
 <h1>SORTEIO FUTURISTA</h1>
 
 <div class="card">
-    <h2>Números disponíveis</h2>
-    <div class="numeros" id="numeros-disponiveis"></div>
+    <h2>Quantidade de números</h2>
+    <input type="number" id="quantidade" min="1" value="10">
+    <br>
+    <button onclick="iniciarSorteio()">Iniciar Sorteio</button>
 </div>
 
 <div class="card">
-    <h2>Números sorteados</h2>
-    <div class="numeros" id="numeros-sorteados"></div>
+    <h2>Número sorteado</h2>
+    <div id="numero-sorteado" class="numero-sorteado">--</div>
 </div>
 
 <button onclick="sortearNumero()">🎲 Sortear Número</button>
@@ -125,68 +122,42 @@ button:hover {
 
 <script>
 let numerosDisponiveis = [];
-let numerosSorteados = [];
+let totalParaSortear = 0;
 
-// Inicializa a lista de 1 a 50
-function inicializar() {
-    numerosDisponiveis = [];
-    numerosSorteados = [];
-    for (let i = 1; i <= 50; i++) numerosDisponiveis.push(i);
-    atualizarTelas();
-}
-
-function atualizarTelas() {
-    const disp = document.getElementById('numeros-disponiveis');
-    const sort = document.getElementById('numeros-sorteados');
-
-    disp.innerHTML = '';
-    sort.innerHTML = '';
-
-    numerosDisponiveis.forEach(n => {
-        const span = document.createElement('span');
-        span.className = 'numero';
-        span.style.animation = 'aparecer 0.5s forwards';
-        span.textContent = n;
-        disp.appendChild(span);
-    });
-
-    if (numerosDisponiveis.length === 0) {
-        const msg = document.createElement('div');
-        msg.textContent = "Não há mais números para sortear!";
-        msg.style.marginTop = '15px';
-        msg.style.fontWeight = 'bold';
-        msg.style.fontSize = '1.2rem';
-        sort.appendChild(msg);
+// Inicializa a lista com números aleatórios de 1 até quantidade definida
+function iniciarSorteio() {
+    totalParaSortear = parseInt(document.getElementById('quantidade').value, 10);
+    if (!totalParaSortear || totalParaSortear < 1) {
+        alert("Digite uma quantidade válida!");
+        return;
     }
 
-    numerosSorteados.forEach(n => {
-        const span = document.createElement('span');
-        span.className = 'numero';
-        span.style.animation = 'aparecer 0.5s forwards';
-        span.textContent = n;
-        sort.appendChild(span);
-    });
+    numerosDisponiveis = [];
+    for (let i = 1; i <= totalParaSortear; i++) numerosDisponiveis.push(i);
+
+    document.getElementById('numero-sorteado').textContent = "--";
+    alert("Sorteio iniciado com " + totalParaSortear + " números!");
 }
 
 function sortearNumero() {
     if (numerosDisponiveis.length === 0) {
-        alert("Não há mais números para sortear!");
+        document.getElementById('numero-sorteado').textContent = "Não há mais números para sortear!";
         return;
     }
 
-    // Pega um número aleatório e remove da lista
+    // Escolhe aleatoriamente um número da lista disponível e remove
     const indice = Math.floor(Math.random() * numerosDisponiveis.length);
     const numero = numerosDisponiveis.splice(indice, 1)[0];
-    numerosSorteados.push(numero);
-    atualizarTelas();
+
+    document.getElementById('numero-sorteado').textContent = numero;
 }
 
 function resetar() {
-    inicializar();
+    numerosDisponiveis = [];
+    totalParaSortear = 0;
+    document.getElementById('numero-sorteado').textContent = "--";
+    document.getElementById('quantidade').value = 10;
 }
-
-// Inicializa ao carregar
-inicializar();
 </script>
 
 </body>
