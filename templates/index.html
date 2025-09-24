@@ -1,110 +1,143 @@
 <!DOCTYPE html>
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sorteio Igreja do Estádio</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ request.url_for('static', path='style.css') }}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: radial-gradient(circle at top, #0d1117, #000000);
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+        h1 {
+            font-size: 2rem;
+            color: #00ffc3;
+            margin-bottom: 10px;
+        }
+        .inputs {
+            margin: 15px 0;
+        }
+        .inputs input {
+            padding: 5px;
+            margin: 5px;
+            width: 80px;
+            border-radius: 5px;
+            border: none;
+            text-align: center;
+        }
+        button {
+            padding: 10px 15px;
+            margin: 10px 5px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        .resultado {
+            font-size: 1.4rem;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+        .numeros {
+            margin-top: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+        }
+        .numero {
+            background: #00ffc3;
+            color: #000;
+            font-weight: bold;
+            padding: 10px 15px;
+            border-radius: 50%;
+            min-width: 40px;
+            text-align: center;
+        }
+        .patrocinadores {
+            margin-top: 20px;
+            font-style: italic;
+            font-size: 1rem;
+            color: #ccc;
+        }
+    </style>
 </head>
 <body>
-    <canvas id="bg"></canvas>
+    <h1>SORTEIO IGREJA DO ESTÁDIO</h1>
 
-    <div class="wrap">
-        <div class="patrocinio">
-            <img src="{{ request.url_for('static', path='patrocinador1.png') }}" alt="Patrocinador 1">
-            <img src="{{ request.url_for('static', path='patrocinador2.png') }}" alt="Patrocinador 2">
-            <img src="{{ request.url_for('static', path='patrocinador3.png') }}" alt="Patrocinador 3">
-        </div>
+    <div class="inputs">
+        <label>Quantidade:</label>
+        <input type="number" id="quantidade" min="1" value="10">
+        <label>De</label>
+        <input type="number" id="minimo" min="1" value="1">
+        <label>até</label>
+        <input type="number" id="maximo" min="1" value="50">
+    </div>
 
-        <h1>SORTEIO IGREJA DO ESTÁDIO</h1>
+    <button onclick="sortear()">🎲 Sortear</button>
+    <button onclick="resetar()">🔄 Resetar</button>
 
-        <div class="numero-sorteado" id="numeroSorteado">
-            {% if numero_sorteado %}{{ numero_sorteado }}{% else %}Nenhum número ainda{% endif %}
-        </div>
+    <div class="resultado" id="numero-sorteado"></div>
+    <div class="numeros" id="numeros-sorteados"></div>
 
-        <div class="botoes">
-            <form method="post" action="/sortear" style="display:inline;">
-                <label>Quantidade de números: </label>
-             <input type="number" id="quantidade" min="1" max="100" value="10">
-         <br>
-                <!-- Coloque este trecho logo acima do botão "Sortear" -->
-                <label>Quantidade de números: </label>
-                <input type="number" id="quantidade" min="1" value="10" style="width:80px">
-
-                <label style="margin-left:10px">De</label>
-                <input type="number" id="minimo" min="1" value="1" style="width:70px">
-
-                <label>até</label>
-                <input type="number" id="maximo" min="1" value="50" style="width:70px">
-                <br><br>
-
-                <button type="submit">🎲 Sortear</button>
-            </form>
-            <form method="post" action="/resetar" style="display:inline;">
-                <button type="submit">🔄 Resetar</button>
-            </form>
-        </div>
-
-        <div class="numeros-sorteados" id="numerosSorteados">
-            {% for n in numeros_sorteados %}
-                <span>{{ n }}</span>
-            {% endfor %}
-        </div>
-
-        <div class="propaganda">
-            <h3>Patrocinado por:</h3>
-            <p>Empresas que apoiam este evento</p>
-        </div>
+    <div class="patrocinadores">
+        Patrocinado por: Empresas que apoiam este evento
     </div>
 
     <script>
-        const canvas = document.getElementById('bg');
-        const ctx = canvas.getContext('2d');
-        let particles = [];
+        function getById(id) { return document.getElementById(id); }
 
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-        window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
+        function sortear() {
+            const qtd = parseInt(getById('quantidade').value, 10);
+            const min = parseInt(getById('minimo').value, 10);
+            const max = parseInt(getById('maximo').value, 10);
 
-        class Particle {
-            constructor() {
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height;
-                this.radius = Math.random() * 2;
-                this.speedX = (Math.random() - 0.5) * 0.5;
-                this.speedY = (Math.random() - 0.5) * 0.5;
+            if (!Number.isInteger(qtd) || qtd <= 0) {
+                alert('Digite uma quantidade válida!');
+                return;
             }
-            update() {
-                this.x += this.speedX;
-                this.y += this.speedY;
-                if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
-                if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+            if (min > max) {
+                alert('O valor mínimo não pode ser maior que o máximo!');
+                return;
             }
-            draw() {
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-                ctx.fillStyle = "#00ffc3";
-                ctx.fill();
-            }
-        }
 
-        function initParticles() {
-            particles = [];
-            for (let i = 0; i < 80; i++) {
-                particles.push(new Particle());
+            const intervalo = max - min + 1;
+            if (qtd > intervalo) {
+                alert(`Não é possível sortear ${qtd} números, pois o intervalo só tem ${intervalo}.`);
+                return;
             }
-        }
 
-        function animate() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            particles.forEach(p => {
-                p.update();
-                p.draw();
+            // Gera a lista de números e embaralha
+            const pool = [];
+            for (let i = min; i <= max; i++) pool.push(i);
+            for (let i = pool.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [pool[i], pool[j]] = [pool[j], pool[i]];
+            }
+
+            const escolhidos = pool.slice(0, qtd);
+
+            getById('numero-sorteado').textContent = "Números sorteados:";
+            const container = getById('numeros-sorteados');
+            container.innerHTML = ""; // limpa antes de mostrar de novo
+            escolhidos.forEach(n => {
+                const span = document.createElement('span');
+                span.className = "numero";
+                span.textContent = n;
+                container.appendChild(span);
             });
-            requestAnimationFrame(animate);
         }
 
-  
+        function resetar() {
+            getById('numero-sorteado').textContent = "";
+            getById('numeros-sorteados').innerHTML = "";
+            getById('quantidade').value = 10;
+            getById('minimo').value = 1;
+            getById('maximo').value = 50;
+        }
+    </script>
+</body>
+</html>
