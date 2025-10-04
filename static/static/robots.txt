@@ -1,3 +1,9 @@
 User-agent: *
 Allow: /
 Sitemap: https://SEU-APP.onrender.com/static/sitemap.xml
+
+
+
+git add .
+git commit -m "add robots and sitemap"
+git push
