@@ -32,6 +32,10 @@ async def home(request: Request):
         "numeros_sorteados": numeros_sorteados
     })
 
+     @app.get("/health")
+     async def health():
+     return {"status": "ok"}
+
 @app.post("/sortear", response_class=HTMLResponse)
 async def sortear(request: Request):
     global numeros_sorteados
