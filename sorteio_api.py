@@ -12,6 +12,14 @@ STATIC_DIR = os.path.join(BASE_DIR, "static")
 app = FastAPI()
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 templates = Jinja2Templates(directory="templates")
+import os
+
+@app.get("/debug-static")
+def debug_static():
+    if os.path.exists(STATIC_DIR):
+        return {"arquivos_na_pasta_static": os.listdir(STATIC_DIR)}
+    else:
+        return {"erro": "Static directory não encontrado", "caminho_esperado": STATIC_DIR}
 
 numeros_sorteados = []
 quantidade_inicial = 50  # Máximo número do sorteio
