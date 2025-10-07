@@ -222,14 +222,24 @@ function resetar() {
 }
 </script>
 <!-- Botão de Instruções -->
-<a href="#como-funciona" 
+<!-- Botão de Avaliação -->
+<a href="https://forms.gle/RXjHthj6NtV522Ua6" target="_blank"
+   style="display: inline-block; background-color: #4CAF50; color: white;
+          padding: 12px 25px; border-radius: 8px; text-decoration: none;
+          font-weight: bold; margin-top: 10px; margin-right: 10px;">
+  ✨ Avaliar Sorteio
+</a>
+
+<!-- Botão de Instruções -->
+<button onclick="toggleInstrucoes()" 
    style="display: inline-block; background-color: #2196F3; color: white;
           padding: 12px 25px; border-radius: 8px; text-decoration: none;
-          font-weight: bold; margin-top: 10px;">
+          font-weight: bold; margin-top: 10px; cursor: pointer;">
   📖 Instruções
-</a>
-<!-- Botões extras -->
-<div id="instrucoes" style="display: none; text-align: left; max-width: 600px; margin: 20px auto; background: hwb#28A745; padding: 15px; border-radius: 10px;">
+</button>
+
+<!-- Caixa de instruções -->
+<div id="instrucoes" style="display: none; text-align: left; max-width: 600px; margin: 20px auto; background: #E9F7EF; padding: 15px; border-radius: 10px;">
   <h3>📘 Como funciona o site</h3>
   <ol>
     <li><b>Passo 1:</b> Acesse o site e escolha a quantidade de números.</li>
@@ -239,10 +249,13 @@ function resetar() {
   </ol>
 </div>
 
-
-
-
-
+<!-- Script para exibir/esconder instruções -->
+<script>
+function toggleInstrucoes() {
+  const bloco = document.getElementById('instrucoes');
+  bloco.style.display = (bloco.style.display === 'none' || bloco.style.display === '') ? 'block' : 'none';
+}
+</script>
  <!-- Botão de Avaliação -->
 <a href="https://https://docs.google.com/forms/d/16iWOe2qRTRwq-loJaZqkm3fwVmd1gqS62jh1Tn3ZdAs/edit" target="_blank"
    style="display: inline-block; background-color: #4CAF50; color: white;
