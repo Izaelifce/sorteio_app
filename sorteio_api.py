@@ -2,15 +2,22 @@
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
+from fastapi.staticfiles import StaticFiles
 import random
 
 app = FastAPI()
+
+# Configuração de arquivos estáticos (para imagens, CSS, JS)
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+# Configuração dos templates HTML
 templates = Jinja2Templates(directory="templates")
 
 quantidade_inicial = 100  # Exemplo, ajuste conforme desejar
 numeros_sorteados = []
 
 
+# Página inicial
 @app.get("/", response_class=HTMLResponse)
 async def home(request: Request):
     return templates.TemplateResponse("index.html", {
@@ -20,7 +27,7 @@ async def home(request: Request):
     })
 
 
-# Endpoint de saúde (verificação se o servidor está online)
+# Endpoint de verificação (Render usa para testar se está online)
 @app.get("/health")
 async def health():
     return {"status": "ok"}
@@ -55,6 +62,8 @@ async def resetar(request: Request):
         "numeros_sorteados": numeros_sorteados
     })
 
+
+# Execução local
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run("sorteio_api:app", host="0.0.0.0", port=8000, reload=True)
