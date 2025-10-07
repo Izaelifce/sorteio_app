@@ -221,48 +221,52 @@ function resetar() {
     document.getElementById('quantidade').value = 10;
 }
 </script>
-<body>
-  <!-- Título principal do site -->
-  <h1>Sorteio Online para Igreja</h1>
-  <p>Faça sorteios em sua igreja online e automatizados!</p>
+<!-- Botões extras -->
+<div style="text-align: center; margin-top: 30px;">
+  <button id="btnInstrucoes" style="padding: 10px 20px; margin: 5px; border: none; background-color: #007BFF; color: white; border-radius: 8px; cursor: pointer;">
+    📘 Instruções
+  </button>
+  <button id="btnAvaliacao" style="padding: 10px 20px; margin: 5px; border: none; background-color: #28A745; color: white; border-radius: 8px; cursor: pointer;">
+    ⭐ Avaliação
+  </button>
+</div>
 
-  <!-- Seção explicando como participar -->
-  <h2>Como funciona o site!</h2>
-  <p>Siga o passo a passo:</p>
+<!-- Seção de Instruções (oculta por padrão) -->
+<div id="instrucoes" style="display: none; text-align: left; max-width: 600px; margin: 20px auto; background: #f8f9fa; padding: 15px; border-radius: 10px;">
+  <h3>📘 Como funciona o site</h3>
+  <ol>
+    <li><b>Passo 1:</b> Acesse o site e escolha a quantidade de números.</li>
+    <li><b>Passo 2:</b> Clique em <b>Sortear</b> para gerar um número aleatório.</li>
+    <li><b>Passo 3:</b> Veja os números já sorteados na lista abaixo.</li>
+    <li><b>Passo 4:</b> Clique em <b>Resetar</b> para limpar o sorteio.</li>
+  </ol>
+</div>
 
-  <!-- Passo a passo detalhado -->
-  <h3>Passo 1: Acesse o site</h3>
-  <p>Abra o navegador e acesse <a href="https://sorteio-app-sorteioparaigreja.onrender.com">nosso site de sorteio</a>.</p>
-
-  <h3>Passo 2: Clique em "Sortear"</h3>
-  <p>Clique no botão "Sortear" para gerar um número aleatório. O número será exibido na tela.</p>
-
-  <h3>Passo 3: Confira os números anteriores</h3>
-  <p>Todos os números já sorteados aparecem na lista abaixo, para você acompanhar.</p>
-
-  <h3>Passo 4: Resetar sorteios</h3>
-  <p>Caso queira reiniciar o sorteio, clique no botão "Resetar". Todos os números serão apagados.</p>
-
-  <!-- Lista de números sorteados (exemplo) -->
-  <h2>Números sorteados</h2>
-  <ul>
-    <li>15</li>
-    <li>32</li>
-    <li>7</li>
-    <li>28</li>
-  </ul>
-  <section id="satisfacao" style="margin-top: 50px; padding: 20px; border-top: 1px solid #ccc;">
-  <h2>Nos diga sua opinião!</h2>
+<!-- Seção de Avaliação (oculta por padrão) -->
+<div id="avaliacao" style="display: none; text-align: center; margin: 20px auto; background: #f8f9fa; padding: 15px; border-radius: 10px; max-width: 400px;">
+  <h3>⭐ Nos diga sua opinião!</h3>
   <p>Como você avalia sua experiência no sorteio?</p>
-  
-  <a href="https://docs.google.com/forms/d/e/1FAIpQLScpW5ORrLcUibpQHScyr7XjjZOuXU6kDR_IMXyjEWVUICByLw/viewform?usp=dialog" target="_blank" 
-     style="display: inline-block; padding: 10px 20px; background-color: #007bff; 
-            color: white; text-decoration: none; border-radius: 5px;">
-    Avaliar
-  </a>
-</section>
+  <div>
+    <button style="margin: 5px;">😊 Ótimo</button>
+    <button style="margin: 5px;">😐 Regular</button>
+    <button style="margin: 5px;">😞 Ruim</button>
+  </div>
+</div>
 
-</body>
+<!-- Script para mostrar/ocultar -->
+<script>
+  document.getElementById("btnInstrucoes").onclick = function() {
+    const box = document.getElementById("instrucoes");
+    box.style.display = (box.style.display === "none") ? "block" : "none";
+  };
+  document.getElementById("btnAvaliacao").onclick = function() {
+    const box = document.getElementById("avaliacao");
+    box.style.display = (box.style.display === "none") ? "block" : "none";
+  };
+</script>
+
+
+
 
 </body>
 </html>
