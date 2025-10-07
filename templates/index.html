@@ -242,17 +242,6 @@ function resetar() {
   </ol>
 </div>
 
-<!-- Seção de Avaliação (oculta por padrão) -->
-<div id="avaliacao" style="display: none; text-align: center; margin: 20px auto; background: #f8f9fa; padding: 15px; border-radius: 10px; max-width: 400px;">
-  <h3>⭐ Nos diga sua opinião!</h3>
-  <p>Como você avalia sua experiência no sorteio?</p>
-  <div>
-    <button style="margin: 5px;">😊 Ótimo</button>
-    <button style="margin: 5px;">😐 Regular</button>
-    <button style="margin: 5px;">😞 Ruim</button>
-  </div>
-</div>
-
 <!-- Script para mostrar/ocultar -->
 <script>
   document.getElementById("btnInstrucoes").onclick = function() {
@@ -264,9 +253,19 @@ function resetar() {
     box.style.display = (box.style.display === "none") ? "block" : "none";
   };
 </script>
+ 
+  <section id="avaliacao" style="margin-top: 50px; text-align: center;">
+    <h2>Nos diga sua opinião!</h2>
+    <p>Responda rapidamente nossa pesquisa de satisfação:</p>
 
-
-
-
+    <!-- Formulário Google Forms incorporado -->
+    <iframe 
+      src="https://docs.google.com/forms/d/e/https://docs.google.com/forms/d/e/1FAIpQLSdvxQM-wP7QHVO79pPgNjZUA-D-9VmLlRZ-iaBlmxIQPZwgPQ/viewform?usp=dialog/viewform?embedded=true" 
+      width="640" height="800" frameborder="0" marginheight="0" marginwidth="0">
+      Carregando…
+    </iframe>
+  </section>
+</body>
+</html>
 </body>
 </html>
