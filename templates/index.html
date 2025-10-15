@@ -173,17 +173,19 @@ button:hover {
 <div class="patrocinio">
        <!-- Bloco de patrocinador -->
 <div class="patrocinio" style="margin-top:20px; text-align:center;">
-    <a href="https://www.instagram.com/josydecorcake" target="_blank">
-        <img src="{{ request.url_for('static', path='image.png') }}" 
-             alt="Patrocinador"  style="width:80px; height:auto;">
-    </a>
- <div class="patrocinio" style="margin-top:20px; text-align:center;">
-    <a href="https://www.instagram.com/@marciomoto" target="_blank">
-         <img src="{{ request.url_for('static', path='image01.png') }}"
-              alt="patrocinador"style="width:80px; height:auto;">
-    </a>
-  atrocinador 2">
-    </a>
+  <a href="https://www.instagram.com/josydecorcake" target="_blank" style="display:inline-block; margin:0 15px;">
+    <img src="{{ request.url_for('static', path='image.png') }}" 
+         alt="Patrocinador Josy" 
+         style="width:80px; height:auto; border-radius:10px;">
+  </a>
+
+  <a href="https://www.instagram.com/marciomoto" target="_blank" style="display:inline-block; margin:0 15px;">
+    <img src="{{ request.url_for('static', path='image01.png') }}" 
+         alt="Patrocinador Marcio Moto" 
+         style="width:80px; height:auto; border-radius:10px;">
+  </a>
+</div>
+
  <img src="{{ request.url_for('static', path='patrocinador3.png') }}" alt="Patrocinador 3">
 </div>
 
