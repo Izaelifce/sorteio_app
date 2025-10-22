@@ -81,6 +81,25 @@
 
   <script type="module" crossorigin src="/assets/index-CETb1ays.js"></script>
 </head>
+<style>
+.patrocinio {
+  display: block !important;  /* força a div a ocupar a linha toda */
+  text-align: center;
+  margin-top: 20px;
+}
+
+.patrocinio a {
+  display: inline-block;
+  margin: 0 15px;
+}
+
+/* Garante que os botões fiquem abaixo */
+a[href*="forms.gle"],
+button[onclick="toggleInstrucoes()"] {
+  display: inline-block;
+  margin-top: 25px;
+}
+</style>
 
 
 <style>
@@ -214,9 +233,9 @@ button:hover {
          style="width:80px; height:auto; border-radius:10px;">
   </a>
 
- 
-</div>
+ </div>
 
+  
 <script>
 let numerosDisponiveis = [];
 let totalParaSortear = 0;
